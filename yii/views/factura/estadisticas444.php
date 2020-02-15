@@ -1,0 +1,466 @@
+<?php
+
+use yii\helpers\Html;
+use yii\grid\GridView;
+use yii\helpers\Url;
+
+/* @var $this yii\web\View */
+/* @var $searchModel app\models\InscripcionSearch */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+
+$this->title = 'Estadísticas Actuales';
+$this->params['breadcrumbs'][] = $this->title;
+
+?>
+ <?php if(!$pdf) { ?>
+<style type="text/css">
+
+table {
+font-family: "Lato","sans-serif";	}		/* added custom font-family  */
+
+table.one {									 
+margin-bottom: 3em;	
+border-collapse:collapse;	}	
+
+td {							/* removed the border from the table data rows  */    
+width: 10em;					
+padding: 1em; 		}		
+
+th {							  /* removed the border from the table heading row  */
+text-align: center;					
+padding: 1em;
+background-color: #e8503a;	     /* added a red background color to the heading cells  */
+color: white;		}			      /* added a white font color to the heading text */
+
+tr {	
+height: 1em;	}
+
+table tr:nth-child(even) {		      /* added all even rows a #eee color  */
+       background-color: #eee;		}
+
+table tr:nth-child(odd) {		     /* added all odd rows a #fff color  */
+background-color:#fff;		}
+
+</style>
+ <?php } ?>
+<div class="facturas-index">
+     <h4 class="info-text" style=" font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;font-weight: bold;text-align: center;font-size: 18px;"> ESTADÍSTICAS ACTUALES</h4>
+    <br>
+    
+     <?php if (Yii::$app->session->hasFlash('success')): ?>
+  <div class="alert alert-success alert-dismissable">
+  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+  <h4><i class="icon fa fa-check"></i>Correo Enviado!</h4>
+  <?= Yii::$app->session->getFlash('success') ?>
+  </div>
+<?php endif; ?>    
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <div class="row" >
+        <h4>Inscritos</h4>
+        <div class="col-lg-12">
+            <table class="table" style="width:90%">
+                <thead >
+                <tr>
+                    <th style="text-align: center">Concepto</th>
+                    <th style="text-align: center">Valor sin IVA</th>
+                    <th style="text-align: center">IVA</th>
+                    <th style="text-align: center">Valor total</th>
+                </tr>
+                </thead>
+                <tbody align="center">
+                <?php
+                $cont=0;
+                $totalSinIva=0;
+                $totalIva=0;
+                $total=0;
+                foreach ($modelEstadisticasCount as $key=>$detalle) {
+                    $totalSinIva += $detalle['valor'];
+                    $totalIva += $detalle['iva'];
+                    $total += ($detalle['iva']+$detalle['valor']);
+                    $cont++;
+                    $mod=0;
+                    $mod = $cont % 2 == 0;
+                    $color =  $mod == 1 ? "#eee" : "#fff";
+                ?>
+                <tr style="background-color:#fff">
+                    <td align="left"   style="padding: '12px'; height: '51px';">
+                        <span style="text-align: center"><?= $detalle['estados'] ?></span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['valor'],0)?></span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['iva'],0)?></span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['iva']+$detalle['valor'],0)?></span>
+                    </td>
+                </tr>
+                <?php } ?>
+                <tr style="background-color:#ccc">
+                    <td align="left"   style="padding: '12px'; height: '51px';">
+                        <span style="text-align: center">Total</span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($totalSinIva,0)?></span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($totalIva,0)?></span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($total,0)?></span>
+                    </td>
+                </tr>
+                <tr style="background-color:#fff">
+                    <td style="text-align: center"></td>
+                    <td style="text-align: center"></td>
+                    <td style="text-align: center"></td>
+                    <td style="text-align: center"></td>
+                </tr>
+            <?php
+                $cont=0;
+                $totalSinIva=0;
+                $totalIva=0;
+                $total=0;
+                foreach ($valoresFacturados as $key=>$detalle) {
+                    $totalSinIva += $detalle['valor'];
+                    $totalIva += $detalle['iva'];
+                    $total += ($detalle['iva']+$detalle['valor']);
+                    $cont++;
+                    $mod=0;
+                    $mod = $cont % 2 == 0;
+                    $color =  $mod == 1 ? "#eee" : "#fff";
+                    ?>
+                    <tr style="background-color:#fff">
+                        <td align="left"   style="padding: '12px'; height: '51px';">
+                            <span style="text-align: center"><?= $detalle['estados'] ?></span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['valor'],0)?></span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['iva'],0)?></span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['iva']+$detalle['valor'],0)?></span>
+                        </td>
+                    </tr>
+                <?php } ?>
+                <tr style="background-color:#ccc">
+                    <td align="left"   style="padding: '12px'; height: '51px';">
+                        <span style="text-align: center">Total</span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($totalSinIva,0)?></span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($totalIva,0)?></span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($total,0)?></span>
+                    </td>
+                </tr>
+                <tr style="background-color:#fff">
+                    <td style="text-align: center"></td>
+                    <td style="text-align: center"></td>
+                    <td style="text-align: center"></td>
+                    <td style="text-align: center"></td>
+                </tr>
+                <?php
+                $cont=0;
+                $totalSinIva=0;
+                $totalIva=0;
+                $total=0;
+                foreach ($valoresPagos as $key=>$detalle) {
+                    $totalSinIva += $detalle['valor'];
+                    $totalIva += $detalle['iva'];
+                    $total += ($detalle['iva']+$detalle['valor']);
+                    $cont++;
+                    $mod=0;
+                    $mod = $cont % 2 == 0;
+                    $color =  $mod == 1 ? "#fff" : "#fff";
+                    ?>
+                    <tr style="background-color:<?= $color ?>">
+                        <td align="left"   style="padding: '12px'; height: '51px';">
+                            <span style="text-align: center"><?= $detalle['estados'] ?></span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['valor'],0)?></span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['iva'],0)?></span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['iva']+$detalle['valor'],0)?></span>
+                        </td>
+                    </tr>
+                <?php } ?>
+                <tr style="background-color:#ccc">
+                    <td align="left"   style="padding: '12px'; height: '51px';">
+                        <span style="text-align: center">Total</span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($totalSinIva,0)?></span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($totalIva,0)?></span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($total,0)?></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row" >
+        <h4>Cuentas por Cobrar</h4>
+        <div class="col-lg-12">
+            <table class="table" style="width:90%">
+                <thead >
+                <tr>
+                    <th style="text-align: center">Concepto</th>
+                    <th style="text-align: center">Valor sin IVA</th>
+                    <th style="text-align: center">IVA</th>
+                    <th style="text-align: center">Valor total</th>
+                </tr>
+                </thead>
+                <tbody align="center">
+                <?php
+                $cont=0;
+                $totalSinIva=0;
+                $totalIva=0;
+                $total=0;
+                foreach ($valoresCC as $key=>$detalle) {
+                    $totalSinIva += $detalle['valor'];
+                    $totalIva += $detalle['iva'];
+                    $total += ($detalle['iva']+$detalle['valor']);
+                    $cont++;
+                    $mod=0;
+                    $mod = $cont % 2 == 0;
+                    $color =  $mod == 1 ? "#eee" : "#fff";
+                    ?>
+                    <tr style="background-color:#fff">
+                        <td align="left"   style="padding: '12px'; height: '51px';">
+                            <span style="text-align: center"><?= $detalle['estados'] ?></span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['valor'],0)?></span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['iva'],0)?></span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['iva']+$detalle['valor'],0)?></span>
+                        </td>
+                    </tr>
+                <?php } ?>
+                <tr style="background-color:#ccc">
+                    <td align="left"   style="padding: '12px'; height: '51px';">
+                        <span style="text-align: center">Total</span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($totalSinIva,0)?></span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($totalIva,0)?></span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($total,0)?></span>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row" >
+        <h4>Patrocinios</h4>
+        <div class="col-lg-12">
+            <table class="table" style="width:90%">
+                <thead >
+                <tr>
+                    <th style="text-align: center">Concepto</th>
+                    <th style="text-align: center">Valor sin IVA</th>
+                    <th style="text-align: center">IVA</th>
+                    <th style="text-align: center">Valor total</th>
+                </tr>
+                </thead>
+                <tbody align="center">
+                <?php
+                $cont=0;
+                $totalSinIva=0;
+                $totalIva=0;
+                $total=0;
+                foreach ($modelPatrocinios as $key=>$detalle) {
+                    $totalSinIva += $detalle['total'];
+                    $totalIva += $detalle['iva'];
+                    $total += ($detalle['iva']+$detalle['total']);
+                    $cont++;
+                    $mod=0;
+                    $mod = $cont % 2 == 0;
+                    $color =  $mod == 1 ? "#eee" : "#fff";
+                    ?>
+                    <tr style="background-color:#fff">
+                        <td align="left"   style="padding: '12px'; height: '51px';">
+                            <span style="text-align: center"><?= $detalle['nombre'] ?></span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['total'],0)?></span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['iva'],0)?></span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['iva']+$detalle['total'],0)?></span>
+                        </td>
+                    </tr>
+                <?php } ?>
+                <tr style="background-color:#ccc">
+                    <td align="left"   style="padding: '12px'; height: '51px';">
+                        <span style="text-align: center">Total</span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($totalSinIva,0)?></span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($totalIva,0)?></span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($total,0)?></span>
+                    </td>
+                </tr>
+                <tr style="background-color:#fff">
+                    <td style="text-align: center"></td>
+                    <td style="text-align: center"></td>
+                    <td style="text-align: center"></td>
+                    <td style="text-align: center"></td>
+                </tr>
+                <?php
+                $cont=0;
+                $totalSinIva=0;
+                $totalIva=0;
+                $total=0;
+                foreach ($patrociniosFacturados as $key=>$detalle) {
+                    $totalSinIva += $detalle['valor'];
+                    $totalIva += $detalle['iva'];
+                    $total += ($detalle['iva']+$detalle['valor']);
+                    $cont++;
+                    $mod=0;
+                    $mod = $cont % 2 == 0;
+                    $color =  $mod == 1 ? "#eee" : "#fff";
+                    ?>
+                    <tr style="background-color:#fff">
+                        <td align="left"   style="padding: '12px'; height: '51px';">
+                            <span style="text-align: center"><?= $detalle['nombre'] ?></span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['valor'],0)?></span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['iva'],0)?></span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['iva']+$detalle['valor'],0)?></span>
+                        </td>
+                    </tr>
+                <?php } ?>
+                <tr style="background-color:#ccc">
+                    <td align="left"   style="padding: '12px'; height: '51px';">
+                        <span style="text-align: center">Total</span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($totalSinIva,0)?></span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($totalIva,0)?></span>
+                    </td>
+                    <td align="right"   style="padding: '12px'; height: '51px';">
+                        <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($total,0)?></span>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <h4>Participantes</h4>
+        <div class="col-lg-12">
+                <table class="table" style="width:400px">
+                    <thead >
+                    <tr>
+                        <th style="text-align: center">Descripción</th>
+                        <th style="text-align: center">Cantidad</th>
+                    </tr>
+                    </thead>
+                    <tbody align="center">
+                    <?php
+                    $cont=0;
+                    $ban=true;
+                    $totalinscritos=0;
+                    $color="#fff";
+                    $totalFacturable=0;
+                    foreach ($inscritosTipo as $key=>$detalle) {
+                        $totalinscritos+=$detalle['inscritos'];
+                        if($detalle['facturable']=='SI') $totalFacturable+=$detalle['inscritos'];
+                    }
+                    ?>
+                    <?php
+                    $ban=true;
+                    foreach ($inscritosTipo as $key=>$detalle) {
+                        $cont++;
+                        $mod=0;
+                        $mod = $cont % 2 == 0;
+                        $color =  $mod == 1 ? "#eee" : "#fff";
+
+                        ?>
+                        <tr style="background-color:<?= $color ?>">
+                            <td align="left"   style="padding: '12px'; height: '51px';">
+                                <span style="text-align: center"><?= $detalle['estados'] ?></span>
+                            </td>
+                            <td align="right"   style="padding: '12px'; height: '51px';">
+                                <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($detalle['inscritos'],0)?></span>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    <tr>
+                        <td align="left"   style="padding: '12px'; height: '51px';border-bottom: 1px solid #ddd">
+                            <span style="text-align: center">TOTAL PAGANDO</span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';border-bottom: 1px solid #ddd">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($totalFacturable,0)?></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left"   style="padding: '12px'; height: '51px';border-bottom: 1px solid #ddd">
+                            <span style="text-align: center">TOTAL</span>
+                        </td>
+                        <td align="right"   style="padding: '12px'; height: '51px';border-bottom: 1px solid #ddd">
+                            <span style="float: 'right'"><?=Yii::$app->formatter->asDecimal($totalinscritos,0)?></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+        </div>
+    </div>
+     <div><p style="font-weight: bold;">Nota : Los valores reflejados son antes de impuestos.</p></div> 
+     <?php if(!$pdf) { ?>
+        <div class="row">
+            <div class="col-sm-12">
+                <p>
+                    <?=  Html::a('Imprimir', FALSE, [
+                        'id' => 'modal-modalht',
+                        'title' => Yii::t('app', 'Imprimir'),
+                        'data' => [
+                            'title'=>'Reporte de Estadísticas',
+                            'pjax' => '0',
+                            'value' =>  Url::toRoute(['factura/generar-estadisticas-pdf']),
+                        ],'class' => 'btn btn-success'
+                    ]);?>
+                    <?= Html::a('Enviar Correo', ['factura/send-email'], ['class' => 'btn btn-info']) ?>
+                </p>
+            </div>
+        </div>
+    <?php } ?>
+</div>
