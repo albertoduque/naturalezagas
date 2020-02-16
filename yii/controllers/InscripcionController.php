@@ -128,19 +128,17 @@ class InscripcionController extends Controller
         $session = Yii::$app->session;
         $event_id = $session->get('event_id');
         $empresa->id_evento = $event_id;
-        if($idEmpresa)
-        {
+        if($idEmpresa){
             $dataEmpresa = $this->findModelEmpresa($idEmpresa);
             $contacto->direccion = $dataEmpresa->direccion;
             $contacto->pais = $dataEmpresa->ciudad->id_pais;
             $pais = $dataEmpresa->ciudad->id_pais;
             $contacto->id_padre = $dataEmpresa->ciudad->id_padre;
-			$id_padre = $dataEmpresa->ciudad->id_padre;
+			      $id_padre = $dataEmpresa->ciudad->id_padre;
             $contacto->id_ciudad = $dataEmpresa->id_ciudad;
             $contacto->telefono = $dataEmpresa->telefono;
             $contacto->telefono_extension = $dataEmpresa->telefono_extension;
             $contacto->movil = $dataEmpresa->movil;
-            
             $contacto->inscripcion=1;
         }
         
@@ -199,51 +197,27 @@ class InscripcionController extends Controller
                 }
             } 
             else {
-                return $this->render('inscripcion-empresa', [
-                    'model' => $model,'listSectoresEmpresas' => $this->toListSectoresEmpresas(),
-                    'listPais'=>  Pais::toList()
-					,'listDepartamento'=> Departamento::toList($pais)
-					,'listCiudad'=> Ciudad::toList($id_padre),
-                    'contacto'=>$contacto,'listCargos'=>Cargos::toList(),
-                    'persona'=>$persona,
-                    'empresa'=>$empresa,
-                    'personas_data'=>  $this->findModelPersonas($idEmpresa),
-                    'listPt'=>ProveedorTecnologico::toList(),
-                    'listTI'=>TipoIdentificacion::toList()
-                ]);
+              return $this->render('inscripcion-empresa', [
+                      'model' => $model,'listSectoresEmpresas' => $this->toListSectoresEmpresas(),
+                      'listPais'=>  Pais::toList(),
+					            'listDepartamento'=> Departamento::toList($pais),
+					            'listCiudad'=> Ciudad::toList($id_padre),
+                      'contacto'=>$contacto,'listCargos'=>Cargos::toList(),
+                      'persona'=>$persona,
+                      'empresa'=>$empresa,
+                      'personas_data'=>  $this->findModelPersonas($idEmpresa),
+                      'listPt'=>ProveedorTecnologico::toList(),
+                      'listTI'=>TipoIdentificacion::toList()
+                      ]);
             }
         }
         else{
-            if ($empresa->load(Yii::$app->request->post())) {
-                var_dump($empresa);die();
-                /*$transaction = Yii::$app->db->beginTransaction();
-                
-                try  {
-                    if($empresa->validate() && $contacto->validate()){
-                        if ($empresa->save(false) && $contacto->save(false)) {
-                            $transaction->commit();
-                            $id=$empresa->getPrimaryKey();
-                            return [['respuesta'=>2,'id'=>$id,'url'=>Url::toRoute(['pais/view','id' => $id])]];
-                        } else {
-                            $transaction->rollBack();
-                            return [['respuesta'=>0,'id'=> $empresa->errors]];
-                        }
-                    }
-                    else
-                    {        
-                        return [['respuesta'=>0,'id'=> $empresa->errors]];
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                }
-              */
-            }
-            else{
+            if (!$empresa->load(Yii::$app->request->post())) {
                 return $this->render('inscripcion-empresa', [
                     'model' => $model,'listSectoresEmpresas' => $this->toListSectoresEmpresas(),
-                    'listPais'=>  Pais::toList()
-					,'listDepartamento'=> Departamento::toList($pais)
-					,'listCiudad'=> Ciudad::toList($id_padre),
+                    'listPais'=>  Pais::toList(),
+					          'listDepartamento'=> Departamento::toList($pais),
+					          'listCiudad'=> Ciudad::toList($id_padre),
                     'contacto'=>$contacto,'listCargos'=> Cargos::toList(),
                     'persona'=>$persona,'empresa'=>$empresa,
                     'personas_data'=>  $this->findModelPersonas($idEmpresa),

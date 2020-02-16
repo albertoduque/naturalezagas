@@ -50,9 +50,9 @@ class Empresas extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nombre', 'identificacion', 'direccion', 'telefono', 'movil', 'id_ciudad', 'afiliado_gremio', 'estado', 'id_sector_empresa', 'id_evento','id_tipo_identificacion'], 'required'],
+            [['nombre', 'identificacion', 'direccion', 'telefono', 'movil', 'id_ciudad', 'afiliado_gremio', 'estado', 'id_sector_empresa', 'id_evento','id_tipo_identificacion','correo_facturacion_electronica'], 'required'],
             [['id_ciudad', 'id_sector_empresa', 'deleted', 'id_evento', 'id_proveedor_tecnologico','id_tipo_identificacion'], 'integer'],
-            [['created_at', 'modified_at','pais','id_padre','verificacion','redirectEmpresa','id_proveedor_tecnologico','correo_facturacion_electronica','is_patrocinios'], 'safe'],
+            [['created_at', 'modified_at','pais','id_padre','verificacion','redirectEmpresa','id_proveedor_tecnologico','is_patrocinios'], 'safe'],
             [['nombre', 'direccion'], 'string', 'max' => 255],
             [['identificacion', 'telefono', 'telefono_extension', 'movil', 'estado'], 'string', 'max' => 20],
             [['afiliado_gremio'], 'string', 'max' => 10],

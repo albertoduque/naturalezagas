@@ -2397,7 +2397,7 @@ class FacturaController extends Controller
            
         //$linscrp = Yii::$app->request->post('listProducto','');
         //$listProducto  =   $linscrp ? json_decode($linscrp) : 0;
-        // $listProducto  =   0;
+        $listProducto  =   0;
         $pro = array();
         $producto='';
         $session = Yii::$app->session;
@@ -4882,29 +4882,19 @@ AND i.estado> 0
             $fila['moneda'] = 'N/A';
             $fila['trm']='';
             $pagos = $this->getTotalInscripciones($factura['idInscripcion']);
-            if($factura["serie"] !== 'NCNT')
-            {
-                if ($factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48)
-                {
-                    $fila['subtotal'] = $pagos['valor'];
-                    $fila['iva'] = ($pagos['valor'] * $factura['prodIva'] / 100);
-                    $fila['total'] = ($fila['iva'] + $pagos['valor']);
-                    $fila['serie'] = $factura['serie'];
-                }
-                else{
-                    $fila['subtotal'] = 'N/A';
-                    $fila['iva'] = 'N/A';
-                    $fila['total'] = 'N/A';
-                    $fila['serie'] = 'N/A';
-                }
+            
+            if ($factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48){
+                $fila['subtotal'] = $pagos['valor'];
+                $fila['iva'] = ($pagos['valor'] * $factura['prodIva'] / 100);
+                $fila['total'] = ($fila['iva'] + $pagos['valor']);
+                $fila['serie'] = $factura['serie'];
+            }else{
+                $fila['subtotal'] = 'N/A';
+                $fila['iva'] = 'N/A';
+                $fila['total'] = 'N/A';
+                $fila['serie'] = 'N/A';
             }
-            else
-            {
-                $fila['subtotal'] = ($pagos['valor'] * -1);
-                $fila['iva'] = (($pagos['valor'] * $factura['prodIva'] / 100)* -1);
-                $fila['total'] = (($fila['iva'] + $pagos['valor'])* -1);
-                
-            }
+            
             $fila['pagado'] = $factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48 ? ' ' : 'N/A';
             $fila['factura'] = $factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48 ? ' ' : 'N/A'; 
             $fila['fecha_factura'] = ' ';

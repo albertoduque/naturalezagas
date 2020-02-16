@@ -34,16 +34,16 @@ use yii\grid\GridView;
                                  <?php $form = ActiveForm::begin(['id'=>'empresa-inscripcion-form-id']); ?>
                                     <?= $form->field($model,'id_empresa')->hiddenInput()->label(false); ?> 
                                     <?=  $form->field($model, 'guardar')->hiddenInput(['value'=> 1])->label(false)  ?>
-                                        <?php echo $this->render(
-											'//empresa/_form'
-											, array('model'=>$empresa
-												,'listSectoresEmpresas'=>$listSectoresEmpresas
-												,'listPais'=>$listPais
-												,'listDepartamento'=>$listDepartamento
-												,'listCiudad'=>$listCiudad
-												, 'listPt'=>$listPt
-												, 'listTI'=>$listTI
-											)); ?>
+                                        <?php echo $this->render('//empresa/_form',
+                                              array('model'=>$empresa
+                                              ,'listSectoresEmpresas'=>$listSectoresEmpresas
+                                              ,'listPais'=>$listPais
+                                              ,'listDepartamento'=>$listDepartamento
+                                              ,'listCiudad'=>$listCiudad
+                                              , 'listPt'=>$listPt
+                                              , 'listTI'=>$listTI,
+                                              'visible'=>false
+                                            )); ?>
                                 <?php ActiveForm::end(); ?>
                             </div>
                         </div>
@@ -53,12 +53,12 @@ use yii\grid\GridView;
                                  <?php $form = ActiveForm::begin(['id'=>'contacto-inscripcion-form-id']); ?>  
                                     <?=  $form->field($model, 'guardar')->hiddenInput(['value'=> 2])->label(false)  ?>
                                     <?php echo $this->render('//contacto/_form',
-										array('model'=>$contacto
-											,'listCargos'=>$listCargos
-											,'listPais'=>$listPais
-											,'listDepartamento'=>$listDepartamento
-											,'listCiudad'=>$listCiudad)
-										); ?>
+                                      array('model'=>$contacto
+                                        ,'listCargos'=>$listCargos
+                                        ,'listPais'=>$listPais
+                                        ,'listDepartamento'=>$listDepartamento
+                                        ,'listCiudad'=>$listCiudad)
+                                      ); ?>
                                 <?php ActiveForm::end(); ?>
                                 <?php Pjax::end(); ?>
                             </div>
