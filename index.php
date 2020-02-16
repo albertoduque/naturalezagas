@@ -11,3 +11,4 @@ require(__DIR__ . '/yii/vendor/yiisoft/yii2/Yii.php');
 $config = require(__DIR__ . '/yii/config/web.php');
 
 (new yii\web\Application($config))->run();
+//donal
