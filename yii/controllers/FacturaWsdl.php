@@ -920,7 +920,7 @@ class FacturaWsdl
 						foreach ($infoFacturas as $factura) {
 							$facturasModificadas[] = array(
 								"tipoDocumentoFacturaModificada" => 1,
-								"prefijoFacturaModificada" => "SETT",
+								"prefijoFacturaModificada" => "FENT",
 								"consecutivoFacturaModificada" => $factura->numero,
 								
 								//"consecutivo" => $model->numero,
@@ -936,7 +936,7 @@ class FacturaWsdl
 						$facturasModificadas[] = array(
 							"tipoDocumentoFacturaModificada" => $td,
 							//"prefijoFacturaModificada" => "SETT", //SETT = Pruebas
-							"prefijoFacturaModificada" => $td == 5 ? "FC" :  "SETT", //SETT = Pruebas
+							"prefijoFacturaModificada" => $td == 5 ? "CONT" :  "FENT", //SETT = Pruebas
 							"consecutivoFacturaModificada" => $model->facturaNumero,
 							
 							//"consecutivo" => '',
@@ -961,7 +961,7 @@ class FacturaWsdl
 					}
 					$facturasModificadas[] = array(
 						"tipoDocumentoFacturaModificada" => $td,
-						"prefijoFacturaModificada" => $td == 5 ? "FC" :  "SETT", //SETT = Pruebas
+						"prefijoFacturaModificada" => $td == 5 ? "CONT" :  "FENT", //SETT = Pruebas
 						"consecutivoFacturaModificada" => $model->facturaNumero,
 						
 						//"consecutivo" => '',
@@ -975,7 +975,7 @@ class FacturaWsdl
 				case 5: //Contingencia
 					$facturasModificadas[] = array( 
 						"tipoDocumentoFacturaModificada" => $model->tipoDocumento,
-						"prefijoFacturaModificada" => "FC",
+						"prefijoFacturaModificada" => "CONT",
 						"consecutivoFacturaModificada" => $model->numero,
 						
 						//"consecutivo" => '',
