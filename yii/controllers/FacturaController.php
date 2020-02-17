@@ -4447,17 +4447,15 @@ AND i.estado> 0
     
     public function actionRetransmitirFactura($id)
     {
-         if(!$this->isUserApproved || !Yii::$app->user->can('facturacion'))
-        {
+        if(!$this->isUserApproved || !Yii::$app->user->can('facturacion')){
             throw new ForbiddenHttpException;
         }
         $model = new Facturas();
         $model->id_estado_factura=1;
         $model->observaciones="";
         $count = count(Yii::$app->request->post('DetalleFactura', []));
-		$model->cantidadLineas = $count;
-		if($count)
-        {
+		    $model->cantidadLineas = $count;
+		    if($count){
             for($i = 1; $i < $count; $i++) {
                 $detalle_facturas[] = new DetalleFactura();
             }
@@ -4473,11 +4471,11 @@ AND i.estado> 0
                 
                 Yii::$app->response->format = Response::FORMAT_JSON;
 				
-				$client = explode("-",$model->clientes);
+				        $client = explode("-",$model->clientes);
                 $client[0]=='p' ? $model->id_persona =  $client[1] : $model->id_empresa =  $client[1];
 				
-				$model->tipoidentificacion  = $model->idEmpresa->tipoIdentificacion->codigo;
-				$model->identificacion = $model->id_empresa ? $model->idEmpresa->identificacion : $model->idPersona->identificacion; 
+				        $model->tipoidentificacion  = $model->idEmpresa->tipoIdentificacion->codigo;
+				        $model->identificacion = $model->id_empresa ? $model->idEmpresa->identificacion : $model->idPersona->identificacion; 
                 $model->verificacion = $model->id_empresa ? $model->idEmpresa->verificacion : ""; 
                 $model->clientes=$model->id_empresa ? $model->idEmpresa->nombre : $model->idPersona->nombre.' '.$model->idPersona->apellido;
                 $model->fecha = $this->FormatoFechas($model->fecha);
@@ -4508,13 +4506,14 @@ AND i.estado> 0
                             $detalle_facturas->subtotal=floatval(str_replace(",","",$df['subtotal']));
                             $detalle_facturas->valorTotal=floatval(str_replace(",","",$df['valorTotal']));    
                             $detalle_facturas->valor=floatval(str_replace(",","",$df['subtotal']));
-                            $detalle_facturas->observacion=$df['descripcion'];
+                            $detalle_facturas->observacion=isset($df['descripcion']) ? $df['descripcion'] : '';
                             $detalle_facturas->id_estado_factura = 1;
                             $detalle_facturas->iva=$df['iva'];
                             
                             $v = explode("-",$df['id_inscripcion']);
                             $detalle_facturas->id_inscripcion=  $v[0] == 'i' ? intval($v[1]) : null;
-                       
+                            if($df['id_inscripcion']>0 && $detalle_facturas->id_inscripcion==null)
+                              $detalle_facturas->id_inscripcion=$df['id_inscripcion'];
                             if($v[0] == 'i'){
                                 $modelDetalleRecibos = \app\models\DetalleRecibos::find()->where(['id_inscripcion'=>$v[1]])->all();
                                 foreach ($modelDetalleRecibos as $modelDetalleRecibo){
@@ -4527,16 +4526,18 @@ AND i.estado> 0
                                 $inscripciones->id_factura = $id;
                                 $inscripciones->save(false);
                             }
-							$modelProductos = $this->findModelProducto($df["id_producto"]);
-							$detalle_factura[$i]["tipo_codigo_producto"] = $modelProductos->tipo_codigo_producto;
-							$detalle_factura[$i]["nombre_producto"] = $modelProductos->nombre;
-							$detalle_factura[$i]["tipo_impuesto"] = $modelProductos->tipo_impuesto;
-							if($df["id_producto"]){
-							    $detalle_facturas->id_producto=$df["id_producto"];
-							}
-							else {
-							    $detalle_facturas->id_producto= $v[0] == 'i' ? $id_producto : intval($v[1]);
-							}
+                            $modelProductos = $this->findModelProducto($df["id_producto"]);
+                            $detalle_factura[$i]["tipo_codigo_producto"] = $modelProductos->tipo_codigo_producto;
+                            $detalle_factura[$i]["nombre_producto"] = $modelProductos->nombre;
+                            $detalle_factura[$i]["tipo_impuesto"] = $modelProductos->tipo_impuesto;
+                            $detalle_factura[$i]["valor"] = $detalle_facturas->valor;
+                            $detalle_factura[$i]["descripcion"] = $detalle_facturas->observacion;
+                            if($df["id_producto"]){
+                                $detalle_facturas->id_producto=$df["id_producto"];
+                            }
+                            else {
+                                $detalle_facturas->id_producto= $v[0] == 'i' ? $id_producto : intval($v[1]);
+                            }
                             if($detalle_facturas->validate()){
                                 $detalle_facturas->save(false);
                             } 
@@ -4547,26 +4548,25 @@ AND i.estado> 0
                             $i++;
                         }
                         $transaction->commit();
-                       
                         try {
                             $facturaWsdl = new FacturaWsdl();
                             $objClientDispapelesApis = new ClientDispapelesApi();
                             $informacionEmpresa = $this->findModelInformacionEmpresa();
-							if($model->id_empresa) { // validar para cuando es solo personas 
-							    $modelEmpresa = $this->findModelEmpresas($model->id_empresa);
-							    $model->ciudad = $modelEmpresa->id_ciudad;
-							    $modelCiudad = $this->findModelDepartamento($model->ciudad);
-							    $modelDepartamento = $this->findModelDepartamento($modelCiudad->id_padre);
-							    $model->departamento = $modelDepartamento->id;
-							    $model->departamentoNombre = $modelDepartamento->nombre;
-							}
-							$model->identificacionFormat = $this->getTipoIdentification($model) ? $this->calculaDigitoVerificador($model->identificacion) : '';
-                            //$model->identificacionFormat = $this->calculaDigitoVerificador($model->identificacion);
+                            if($model->id_empresa) { // validar para cuando es solo personas 
+                                $modelEmpresa = $this->findModelEmpresas($model->id_empresa);
+                                $model->ciudad = $modelEmpresa->id_ciudad;
+                                $modelCiudad = $this->findModelDepartamento($model->ciudad);
+                                $modelDepartamento = $this->findModelDepartamento($modelCiudad->id_padre);
+                                $model->departamento = $modelDepartamento->id;
+                                $model->departamentoNombre = $modelDepartamento->nombre;
+                            }
+                            $model->identificacionFormat = $this->getTipoIdentification($model) ? $this->calculaDigitoVerificador($model->identificacion) : '';
+                                          //$model->identificacionFormat = $this->calculaDigitoVerificador($model->identificacion);
                             $model->tipoDocumento= 1; //Factura de Venta
-							$model->orden_compra = ""; 
-							$model->fechaemisionordencompra = date("Y-m-d"); 
-							$model->numeroaceptacioninterno = ""; 
-							$model->id_impuesto = 1; //01 = IVA
+                            $model->orden_compra = ""; 
+                            $model->fechaemisionordencompra = date("Y-m-d"); 
+                            $model->numeroaceptacioninterno = ""; 
+                            $model->id_impuesto = 1; //01 = IVA
                             $modelFactura = $this->findModel($id);
                             $params = $facturaWsdl->loadNC($model, $detalle_factura,$informacionEmpresa); // token antigiuo e2556e2f2dc65b60653fab4fc380996647363a01
                             
