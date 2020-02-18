@@ -32,7 +32,7 @@ use Yii;
  */
 class DetalleFactura extends \yii\db\ActiveRecord
 {
-    public $producto;
+    public $producto,$descripcion;
     /**
      * @inheritdoc
      */
@@ -50,7 +50,7 @@ class DetalleFactura extends \yii\db\ActiveRecord
             [['id_factura', 'cantidad', 'valor', 'valorTotal','id_producto'], 'required'],
             [['id_factura', 'cantidad', 'id_moneda', 'id_estado_factura', 'deleted','nc_id'], 'integer'],
             //[['valor', 'descuento', 'valorTotal', 'subtotal', 'iva'], 'double'],
-            [['created_at', 'modified_at','id_inscripcion','descripcion_id','producto','nc_id'], 'safe'],
+            [['created_at', 'modified_at','id_inscripcion','descripcion_id','producto','nc_id','descripcion'], 'safe'],
             [['observacion','producto'], 'string', 'max' => 255],
             [['id_producto'], 'exist', 'skipOnError' => true, 'targetClass' => Productos::className(), 'targetAttribute' => ['id_producto' => 'id']],
             [['id_inscripcion'], 'exist', 'skipOnError' => true, 'targetClass' => Inscripciones::className(), 'targetAttribute' => ['id_inscripcion' => 'id']],

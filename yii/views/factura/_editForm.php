@@ -150,14 +150,14 @@ use yii\web\View;
 							<?php foreach($detalle_factura as $i=>$df) {?>
 								<tr data-ids="[<?=$i?>]">
 									<td>
-                                        <?php
-                                            $nombre = $df['id_inscripcion'] ? "-".$df->idInscripcion->idPersona->nombre." ".$df->idInscripcion->idPersona->apellido : '' ;
-                                            echo $df->idProducto->nombre.$nombre ?>
-                                        <?= $form->field($df, "[$i]id")->hiddenInput(['value'=> $df['id']])->label(false);?>
-								        <?= $form->field($df, "[$i]id_producto")->hiddenInput(['value'=> $df['id_producto']])->label(false);?>
-								        <?= $form->field($df, "[$i]producto")->hiddenInput(['value'=> $df->idProducto->nombre])->label(false);?>
-									    <?= $form->field($df, "[$i]id_inscripcion")->hiddenInput(['value'=> $df['id_inscripcion']])->label(false);?></td>
-									<td><?= $form->field($df, "[$i]observacion")->textInput(['class'=>'form-control'])->label(false) ?></td>
+                      <?php
+                          $nombre = $df['id_inscripcion'] ? "-".$df->idInscripcion->idPersona->nombre." ".$df->idInscripcion->idPersona->apellido : '' ;
+                          echo $df->idProducto->nombre.$nombre ?>
+                      <?= $form->field($df, "[$i]id")->hiddenInput(['value'=> $df['id']])->label(false);?>
+                      <?= $form->field($df, "[$i]id_producto")->hiddenInput(['value'=> $df['id_producto']])->label(false);?>
+                      <?= $form->field($df, "[$i]producto")->hiddenInput(['value'=> $df['producto']])->label(false);?>
+                      <?= $form->field($df, "[$i]id_inscripcion")->hiddenInput(['value'=> $df['id_inscripcion']])->label(false);?></td>
+									<td><?= $form->field($df, "[$i]descripcion")->textInput(['class'=>'form-control'])->label(false) ?></td>
 									<td><?= $form->field($df, "[$i]cantidad")->textInput(['class'=>'form-control','style'=>'text-align: right;'])->label(false) ?></td>
 									<td><?= $form->field($df, "[$i]subtotal")->textInput(['class'=>'form-control','style'=>'text-align: right;','onkeypress'=>'javascript:subtotal(this)','value'=> Yii::$app->formatter->asDecimal($df['valor'],0)])->label(false) ?></td>
 									<td><?= $form->field($df, "[$i]iva")->textInput(['class'=>'form-control','style'=>'text-align: right;','onkeyup'=>'javascript:iva(this)'])->label(false) ?></td>
@@ -196,9 +196,9 @@ use yii\web\View;
             </div>
         </div>
          <div class="form-group pull-right">
-        	<?= $form->field($model, 'tipoidentificacion')->hiddenInput()->label('') ?>	
-			<?= $form->field($model, 'tipoDocumento')->hiddenInput()->label(false) ?>
-			<?= $form->field($model, 'fecha_factura')->hiddenInput()->label(false) ?>
+        	  <?= $form->field($model, 'tipoidentificacion')->hiddenInput()->label('') ?>	
+			      <?= $form->field($model, 'tipoDocumento')->hiddenInput()->label(false) ?>
+			      <?= $form->field($model, 'fecha_factura')->hiddenInput()->label(false) ?>
             <?= $form->field($model, 'is_patrocinios')->hiddenInput()->label(false); ?>
             <?= $form->field($model, 'serie')->hiddenInput()->label(false); ?>
             <?= $form->field($model, 'identificacion')->hiddenInput()->label(false) ?>

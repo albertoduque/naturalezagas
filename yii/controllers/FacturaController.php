@@ -643,223 +643,52 @@ class FacturaController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($id_inscripcion=0){
-		
-		/*
-		$facturaWsdl = new FacturaWsdl();
-		$objClientDispapelesApis = new ClientDispapelesApi();
-		$xmlInvoice = array(
-			"felCabezaDocumento"=> array( //Se reemplaza argumento arg0 por felCabezaDocumento, no esta definido en el manual
-				//Cabeza documento electrónico
-				"idEmpresa"=>"348", //OK
-				"usuario"=>"EmpAsociNaturgas", //OK
-				"contrasenia"=>"PwAs0c1ac10natuG4s", //OK
-				"token"=>"e2556e2f2dc65b60653fab4fc380996647363a01", //OK
-				"version"=> "V5", //OK
-				"tipodocumento"=> 1, //OK
-				"prefijo"=> "SETT", //OK, se cambio FENNT por SETT, no esta defindo el manual 
-				"consecutivo"=> "451", //OK
-				"fechafacturacion"=> "2019-11-20T00:00:00-05:00", //OK
-				"codigoPlantillaPdf"=> 1, //OK Se cambi "" por 1
-				//"idErp"=> "", //OK NO se envia
-				"cantidadLineas"=> "1", //OK
-				//"incoterm"=> "", //OK NO se envia 
-				//"tiponota"=> "", //OK NO se envia por validacion
-				"aplicafel"=> "Si", //OK
-				"codigovendedor"=> "",//OK
-				"nombrevendedor"=> "",//OK
-				"listaDetalle"=> array( //OK
-					"codigoproducto"=>"18", //OK
-					"tipocodigoproducto"=>"999", //OK
-					"nombreProducto"=>"EXHIBICION CONGRESO NATURGAS 2019", //No se encontraba
-					"descripcion"=>"EXHIBICION CONGRESO NATURGAS 2019", //OK
-					"referencia"=>"", //OK
-					"cantidad"=>"1", //OK
-					"unidadmedida"=>"94", //OK
-					"valorunitario"=>4200000, //OK
-					"preciosinimpuestos"=>4200000, //OK
-					"preciototal"=>4200000, //OK
-					"posicion"=>"",//NO ES UN CAMPO REQUERIDO PERO LO SOLICITA EL WS
-					"seriales"=>"", //OK
-					"gramaje"=>"", //OK
-					"tamanio"=>"", //OK
-					"muestracomercial"=> "",//NO ES UN CAMPO REQUERIDO PERO LO SOLICITA EL WS
-					"muestracomercialcodigo"=> "",//NO ES UN CAMPO REQUERIDO PERO LO SOLICITA EL WS
-					"tipoImpuesto"=>1,//OK 1 Gravado, 2 Excluido, 3 Excento, se esta pasando null
-					"listaImpuestos"=>array( //OK
-						"codigoImpuestoRetencion"=>"03", //OK SE esta pasando 03 ICA, 01 IVA, 05 ReteIVA
-						"porcentaje"=>"19", //OK
-						"valorImpuestoRetencion"=>798000, //OK
-						"baseimponible"=>4200000, //OK
-						"isAutoRetenido"=>false, //OK true para reteiva, false para impuesto
-					)
-				),
-				//Fin detalle documento electrónico
-				"listaImpuestos"=> array( //OK
-					"codigoImpuestoRetencion"=>"03", //OK //OK SE esta pasando 03 ICA, 01 IVA, 05 ReteIVA
-					"porcentaje"=> "", //OK Se esta pasando  ""
-					"valorImpuestoRetencion"=>"798000", //OK
-					"baseimponible"=>"4200000", //OK
-					"isAutoRetenido"=>false, //OK true para reteiva, false para impuesto
-				),
-				//Fin impuesto documento electrónico
-				//"listaFacturasModificadas"=> array( //OK
-					//"tipoDocumentoFacturaModificada"=>"", //OK
-					//"prefijoFacturaModificada"=>"", //OK
-					//"consecutivofacturamodificada"=>"", //OK
-				//), //Se pasa para tipo nota creadito
-				"listaOrdenesCompras"=> array( //OK
-					"ordencompra"=>"12", //OK
-					"fechaemisionordencompra"=>"2019-11-20", //OK
-					"numeroaceptacioninterno"=>"324", //OK
-				),
-				"listaMediosPagos"=> array( //OK
-					"medioPago"=>"1" //OK
-				),
-				"tipoOperacion"=> "10", //OK, se tenia 05 se cambia por 10
-				//Fin cabeza documento electrónico
-				
-				"listaAdquirentes"=>array( //NO esta contratado ésta lista
-					"tipoPersona"=> 1 //1 Juridica, 2 Natural
-					, "nombreCompleto"=> " "
-					, "tipoIdentificacion"=> 11 //13 persona natual, 31 persona juridica
-					, "numeroIdentificacion"=> 900942658
-					, "digitoverificacion"=> null
-					, "regimen"=> "05"
-					, "email"=> "daniel.morales@bss.morpss.com"
-					, "pais"=> "CO"
-					, "departamento"=>"05"
-					, "nombreDepartamento"=>null //Primera en Mayúscula
-					, "ciudad"=>"05250"
-					, "descripcionCiudad"=> null //Todo en Mayúscula
-					, "direccion"=> "CALLE 98"
-					, "telefono"=> "1"
-					, "envioPorEmailPlataforma"=>"email"
-					//, "nitProveedorTecnologico"=>"" NO se debe enviar
-					, "tipoObligacion"=>"O-14"
-					, "paisNombre"=>null //Primera en Mayúscula
-				),
-				
-				//Pago
-				"pago"=>array( //OK Se colocaron los campos en la lista 
-					"moneda"=> "COP",
-					"totalimportebruto"=> 4200000,
-					"totalbaseimponible"=> 4200000,
-					"totalbaseconimpuestos"=> 4998000,//Se esta pasado el IVA, totalimportebruto + impuestogenerales
-					"totalfactura"=> 4998000,
-					"tipocompra"=> 2, //1 Contado, 2 Crédito
-					"periododepagoa"=> 30, //Días
-					"fechavencimiento"=> "2019-11-20",
-					"trm"=> ""
-				),
-				//Fin Pago
-				
-				//Campos Adicionales
-				"listaCamposAdicionales" => array(
-					"nombreCampo" => "ciudadEmp"
-					,"valorCampo" => "BOGOTA DC"
-					,"orden"=>0
-					,"seccion"=>0
-				),
-				"listaCamposAdicionales"=>array(
-					"nombreCampo"=>"direccionEmp"
-					,"valorCampo"=>"Calle 72 No. 10 – 70, Torre A, Oficina 705"
-					,"orden"=>0
-					,"seccion"=>0
-				),
-				"listaCamposAdicionales"=>array(
-					"nombreCampo"=>"telefonoEmp"
-					,"valorCampo"=>"571- 2124543"
-					,"orden"=>0
-					,"seccion"=>0
-				),
-				"listaCamposAdicionales"=>array(
-					"nombreCampo"=>"regimenEmp"
-					,"valorCampo"=>"Responsable de IVA"
-					,"orden"=>0
-					,"seccion"=>0
-				),
-				"listaCamposAdicionales"=>array(
-					"nombreCampo"=>"autfactelec"
-					,"valorCampo"=>"18762011816144"
-					,"orden"=>0
-					,"seccion"=>0
-				),
-				"listaCamposAdicionales"=>array(
-					"nombreCampo"=>"fechaautfact"
-					,"valorCampo"=>"14/12/2018"
-					,"orden"=>0
-					,"seccion"=>0
-				),
-				"listaCamposAdicionales"=>array(
-					"nombreCampo"=>"RangoInicial"
-					,"valorCampo"=>"401"
-					,"orden"=>0
-					,"seccion"=>0
-				),
-				"listaCamposAdicionales"=>array(
-					"nombreCampo"=>"RangoFinal"
-					,"valorCampo"=>"500"
-					,"orden"=>0
-					,"seccion"=>0
-				),
-			)
-		);
-		$response = $objClientDispapelesApis->enviarFactura($xmlInvoice);
-		exit();
-		*/
-		
-        if(!$this->isUserApproved || !Yii::$app->user->can('facturacion'))
-        {
+    public function actionCreate($id_inscripcion=0)
+    {
+        if(!$this->isUserApproved || !Yii::$app->user->can('facturacion')){
             throw new ForbiddenHttpException;
         }
         $model = new Facturas();
         $model->id_estado_factura=1;
         $model->observaciones="";
         $count = count(Yii::$app->request->post('DetalleFactura', []));
-		$model->cantidadLineas = $count;
+		    $model->cantidadLineas = $count;
         if($count){
             for($i = 1; $i < $count; $i++) {
                 $detalle_facturas[] = new DetalleFactura();
             }
         }
         else{
-             $detalle_factura = new DetalleFactura();
+            $detalle_factura = new DetalleFactura();
         }
         if (Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {//\yii\base\Model::loadMultiple($detalle_factura, Yii::$app->request->post()
                 $detalle_factura = Yii::$app->request->post('DetalleFactura');  
+                $count = count($detalle_factura);
+                $model->cantidadLineas = $count;
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 //Verificar Si el model is patrocinios
-                if($model->is_patrocinios && $model->id_contacto!='')
-                {
+                if($model->is_patrocinios && $model->id_contacto!=''){
                     $contact = explode("-",$model->id_contacto);
-                    if(count($contact) > 1)
-                    {
+                    if(count($contact) > 1){
                         $model->id_contacto = $contact[0]=="e" ? NULL : $contact[1];
                     }else {
                         $model->id_contacto =  $model->id_contacto;
                     }
                     $client = explode("-",$model->clientes);
                     $client[0]=='p' ? $model->id_persona =  $client[1] : $model->id_empresa =  $client[1];
-					
                 }
                 else{
                     if($model->idEmpresa && $model->id_contacto=='')
                         return [['respuesta'=>0,'data'=> \yii\widgets\ActiveForm::validate($model)]];
                     $model->id_contacto= NULL;
                 }
-				
-				/*print "<pre>";
-				var_dump(Yii::$app->request->post());
-				print "</pre>";*/
-				$model->tipoidentificacion = ($model->idEmpresa->tipoIdentificacion->codigo);
+				        $model->tipoidentificacion = $model->idEmpresa->tipoIdentificacion->codigo;
                 $model->identificacion = $model->id_empresa ? $model->idEmpresa->identificacion : $model->idPersona->identificacion; 
                 $model->verificacion = $model->id_empresa ? $model->idEmpresa->verificacion : ""; 
                 $model->clientes=$model->id_empresa ? $model->idEmpresa->nombre : $model->idPersona->nombre.' '.$model->idPersona->apellido;
 				
-                if($model->validate() && $detalle_factura)
-                {
+                if($model->validate() && $detalle_factura){
                     $transaction = Yii::$app->db->beginTransaction();
                     try{
                         $model->fecha = $this->FormatoFechas($model->fecha);
@@ -877,15 +706,13 @@ class FacturaController extends Controller
                         $model->trm= $model->trm ? floatval(str_replace(",","",$model->trm)) : 0;
 
                         $oldFactura = Facturas::find()->where(['=', 'id_evento', $event_id])->andWhere(['numero' => $model->numero])->one();
-                        if($oldFactura)
-                        {
+                        if($oldFactura){
                             $model->numero = strval(\Yii::$app->params['consecutivoFactura'] + 1);
                         }
-                        if($model->validate())
-                        {
+                        if($model->validate()){
                             $this->safeModel($model);
                             $id=$model->getPrimaryKey();
-							$i = 0;
+							              $i = 0;
                             foreach ($detalle_factura as $df) {
                                 $detalle_facturas = new DetalleFactura();
                                 $detalle_facturas->id_factura=$id;
@@ -896,15 +723,14 @@ class FacturaController extends Controller
                                 $detalle_facturas->observacion=$df['descripcion'];
                                 $detalle_facturas->id_estado_factura = 1;
                                 $detalle_facturas->iva=$df['iva'];
-								//$detalle_facturas->user_id = Yii::$app->user->id;
+								                //$detalle_facturas->user_id = Yii::$app->user->id;
                                 
                                 $v = explode("-",$df['id_inscripcion']);
                                 $detalle_facturas->id_inscripcion=  $v[0] == 'i' ? intval($v[1]) : null;
                            
                                 if($v[0] == 'i'){
                                     $modelDetalleRecibos = \app\models\DetalleRecibos::find()->where(['id_inscripcion'=>$v[1]])->all();
-                                    foreach ($modelDetalleRecibos as $modelDetalleRecibo)
-                                    {
+                                    foreach ($modelDetalleRecibos as $modelDetalleRecibo){
                                         $modelDetalleRecibo->id_factura = $id;
                                         $modelDetalleRecibo->save(false);
                                     }
@@ -914,25 +740,23 @@ class FacturaController extends Controller
                                     $inscripciones->id_factura = $id;
                                     $inscripciones->save(false);
                                 }
-								$modelProductos = $this->findModelProducto($detalle_factura[$i]["id_producto"]);
-								$codigo_producto = $modelProductos->tipo_codigo_producto;
-								$nombre_producto = $modelProductos->nombre;
-								$impuesto_producto = $modelProductos->tipo_impuesto;
-								$detalle_factura[$i]["tipo_codigo_producto"] =  $codigo_producto;
-								$detalle_factura[$i]["nombre_producto"] =  $nombre_producto;
-								$detalle_factura[$i]["tipo_impuesto"] = $impuesto_producto;
-								
-								$detalle_facturas->id_producto= $v[0] == 'i' ? $id_producto : intval($v[1]);
-                                if($detalle_facturas->validate())
-                                {
+                                $modelProductos = $this->findModelProducto($detalle_factura[$i]["id_producto"]);
+                                $codigo_producto = $modelProductos->tipo_codigo_producto;
+                                $nombre_producto = $modelProductos->nombre;
+                                $impuesto_producto = $modelProductos->tipo_impuesto;
+                                $detalle_factura[$i]["tipo_codigo_producto"] =  $codigo_producto;
+                                $detalle_factura[$i]["nombre_producto"] =  $nombre_producto;
+                                $detalle_factura[$i]["tipo_impuesto"] = $impuesto_producto;
+                                
+                                $detalle_facturas->id_producto= $v[0] == 'i' ? $id_producto : intval($v[1]);
+                                if($detalle_facturas->validate()){
                                     $detalle_facturas->save(false);
                                 }
-                                else
-                                {
+                                else{
                                     $transaction->rollBack();
                                     return [['respuesta'=>0,'error'=>$detalle_facturas->getErrors(),'id'=>$detalle_facturas->id_factura]];
                                 }
-								$i++;
+								                $i++;
                             }
                             $transaction->commit();
 
@@ -946,78 +770,68 @@ class FacturaController extends Controller
                                 $facturaWsdl = new FacturaWsdl();
                                 $objClientDispapelesApis = new ClientDispapelesApi();
                                 $informacionEmpresa = $this->findModelInformacionEmpresa();
-								if($model->id_empresa) { // validar para cuando es solo personas 
-								    $modelEmpresa = $this->findModelEmpresas($model->id_empresa);
-								    $model->ciudad = $modelEmpresa->id_ciudad;
-								    $modelCiudad = $this->findModelDepartamento($model->ciudad);
-								    $modelDepartamento = $this->findModelDepartamento($modelCiudad->id_padre);
-								    $model->departamento = $modelDepartamento->id;
-								    $model->departamentoNombre = $modelDepartamento->nombre;
-								}
+                                if($model->id_empresa) { // validar para cuando es solo personas 
+                                    $modelEmpresa = $this->findModelEmpresas($model->id_empresa);
+                                    $model->ciudad = $modelEmpresa->id_ciudad;
+                                    $modelCiudad = $this->findModelDepartamento($model->ciudad);
+                                    $modelDepartamento = $this->findModelDepartamento($modelCiudad->id_padre);
+                                    $model->departamento = $modelDepartamento->id;
+                                    $model->departamentoNombre = $modelDepartamento->nombre;
+                                }
                                 //$model->identificacionFormat = $this->calculaDigitoVerificador($model->identificacion);
                                 $model->identificacionFormat = $this->getTipoIdentification($model) ? $this->calculaDigitoVerificador($model->identificacion) : '';
                                 $model->tipoDocumento= 1; //Factura de Venta
-								$model->orden_compra = ""; 
-								$model->fechaemisionordencompra = date("Y-m-d"); 
-								$model->numeroaceptacioninterno = ""; 
-								$model->id_impuesto = 1; //01 = IVA
+                                $model->orden_compra = ""; 
+                                $model->fechaemisionordencompra = date("Y-m-d"); 
+                                $model->numeroaceptacioninterno = ""; 
+                                $model->id_impuesto = 1; //01 = IVA
                                 $modelFactura = $this->findModel($id);
                                 $params = $facturaWsdl->loadNC($model, $detalle_factura,$informacionEmpresa); // token antigiuo e2556e2f2dc65b60653fab4fc380996647363a01
                                 
-								//var_dump($params);print "<br>";die;
-                                //$xmlInvoice = $facturaWsdl->createFactura('5ce21110c1e2d29f448f9ee0a10f26fed0238d25', $params);//Producción
-                                $xmlInvoice = $facturaWsdl->createFactura('a676eeac3c09745ae19d35f952b94e942df9afae', $params); //Desarrollo
-								/*print "<pre>";
-								var_dump($xmlInvoice);
-								print "</pre>";
-								exit();*/
-								//var_dump(9);print "<br>";
+								                $xmlInvoice = $facturaWsdl->createFactura('a676eeac3c09745ae19d35f952b94e942df9afae', $params); //Desarrollo
+                                
                                 $response = $objClientDispapelesApis->enviarFactura($xmlInvoice);
-								//var_dump(10);print "<br>";
-								$modelFactura->send_xml = json_encode((array)$xmlInvoice);
-								//var_dump(11);print "<br>";
+								
+								                $modelFactura->send_xml = json_encode((array)$xmlInvoice);
                                 $modelFactura->respuesta = json_encode((array)$response->return);
-								//var_dump(12);print "<br>";
 
-								if($response->return->estadoProceso == 0){
-								    $modelFactura->save(false);
-									//return [['respuesta'=>3,'id' => $id,"mensaje"=>"1. ".$response->return->descripcionProceso]];
-									//Listado de errores presentados por el WS
-									$listaMensajesProceso = "";
-									foreach($response->return->listaMensajesProceso as $row){
-										if($row->rechazoNotificacion == "R"){
-											$listaMensajesProceso .= $row->descripcionMensaje."\n";
-										}
-									}
-									return [[
-										'respuesta'=>3
-										,'id' => $id
-										,"descripcionProceso" =>" 1. ".$response->return->descripcionProceso
-										,"listaMensajesProceso" => $listaMensajesProceso
-										,'redirect'=>Url::toRoute(['/factura/facturados'])
-									]];
-								}
-								else{
-									//if ($response->return->mensaje == 'OK') {
-									if ($response->return->estadoProceso == 1) {
-										$modelFactura->cufe = $response->return->cufe;
-										$modelFactura->fecha_transmision = $response->return->fechaFactura;
-										$modelFactura->save(false);
-										return [['respuesta'=>1,'id' => $id,'redirect'=>Url::toRoute(['/factura/facturados'])]];
-									}
-									else
-									{
-										$modelFactura->save(false);
-										return [['respuesta'=>2,'error' => 'error','redirect'=>Url::toRoute(['/factura/facturados'])]];
-									}
-								}
+                                if($response->return->estadoProceso == 0){
+                                    $modelFactura->save(false);
+                                  //return [['respuesta'=>3,'id' => $id,"mensaje"=>"1. ".$response->return->descripcionProceso]];
+                                  //Listado de errores presentados por el WS
+                                  $listaMensajesProceso = "";
+                                  foreach($response->return->listaMensajesProceso as $row){
+                                    if($row->rechazoNotificacion == "R"){
+                                      $listaMensajesProceso .= $row->descripcionMensaje."\n";
+                                    }
+                                  }
+                                  return [[
+                                    'respuesta'=>3
+                                    ,'id' => $id
+                                    ,"descripcionProceso" =>" 1. ".$response->return->descripcionProceso
+                                    ,"listaMensajesProceso" => $listaMensajesProceso
+                                    ,'redirect'=>Url::toRoute(['/factura/facturados'])
+                                  ]];
+                                }
+                                else{
+                                  //if ($response->return->mensaje == 'OK') {
+                                  if ($response->return->estadoProceso == 1) {
+                                    $modelFactura->cufe = $response->return->cufe;
+                                    $modelFactura->fecha_transmision = $response->return->fechaFactura;
+                                    $modelFactura->save(false);
+                                    return [['respuesta'=>1,'id' => $id,'redirect'=>Url::toRoute(['/factura/facturados'])]];
+                                  }
+                                  else
+                                  {
+                                    $modelFactura->save(false);
+                                    return [['respuesta'=>2,'error' => 'error','redirect'=>Url::toRoute(['/factura/facturados'])]];
+                                  }
+                                }
                             }catch (\SoapFault $e){
-                                //return [['respuesta'=>2,'error' => 'error','redirect'=>Url::toRoute(['/factura/facturados'])]];
-								return [['respuesta'=>3,"mensaje"=>"2. - ".$response->return->descripcionProceso]];
+                              return [['respuesta'=>2,'error' => 'error','redirect'=>Url::toRoute(['/factura/facturados'])]];
                             }
                         }
-                        else
-                        {
+                        else{
                             $transaction->rollBack();
                             return [['respuesta'=>20,'data'=> \yii\widgets\ActiveForm::validate($model)]];
                         }
@@ -1026,10 +840,8 @@ class FacturaController extends Controller
                         $transaction->rollBack();
                         return [['respuesta'=>30,'data'=> \yii\widgets\ActiveForm::validate($model)]];
                     }
-                 }
-                else {
-                    return [['respuesta'=>40,'data'=> \yii\widgets\ActiveForm::validate($model)]];
-                                        
+                 }else {
+                    return [['respuesta'=>40,'data'=> \yii\widgets\ActiveForm::validate($model)]];                      
                 }
             } else {
                echo "0";
@@ -1065,29 +877,28 @@ class FacturaController extends Controller
             if($inscripcion->idEmpresa) {
                 $model->direccion = $inscripcion->idEmpresa->contactos[0]->direccion;
                 $model->telefonoContacto = $inscripcion->idEmpresa->contactos[0]->telefono;
-				$model->tipoidentificacion = $inscripcion->idEmpresa->tipoIdentificacion->codigo;
-				$model->ciudad = $inscripcion->idEmpresa->ciudad->codigo;
-				if($inscripcion->idPersona->ciudad->id_pais == 1){
-					$depto = $this->findModelDepartamento($inscripcion->idEmpresa->ciudad->id_padre);
-					$model->departamento = $depto->codigo;
-				}
-				else{
-					$model->departamento = "";
-				}
-			}
-            elseif($inscripcion->id_persona) {
+                $model->tipoidentificacion = $inscripcion->idEmpresa->tipoIdentificacion->codigo;
+                $model->ciudad = $inscripcion->idEmpresa->ciudad->codigo;
+                if($inscripcion->idPersona->ciudad->id_pais == 1){
+                  $depto = $this->findModelDepartamento($inscripcion->idEmpresa->ciudad->id_padre);
+                  $model->departamento = $depto->codigo;
+                }
+                else{
+                  $model->departamento = "";
+                }
+            } elseif($inscripcion->id_persona) {
                 $model->direccion = $inscripcion->idPersona->direccion;
                 $model->telefonoContacto = $inscripcion->idPersona->telefono;
-				$model->tipoidentificacion = $inscripcion->idPersona->tipoIdentificacion->codigo;
-				$model->ciudad = $inscripcion->idPersona->ciudad->codigo;
-				
-				if($inscripcion->idPersona->ciudad->id_pais == 1){
-					$depto = $this->findModelDepartamento($inscripcion->idPersona->ciudad->id_padre);					
-					$model->departamento = $depto->codigo;
-				}
-				else{
-					$model->departamento = "";
-				}
+                $model->tipoidentificacion = $inscripcion->idPersona->tipoIdentificacion->codigo;
+                $model->ciudad = $inscripcion->idPersona->ciudad->codigo;
+                
+                if($inscripcion->idPersona->ciudad->id_pais == 1){
+                  $depto = $this->findModelDepartamento($inscripcion->idPersona->ciudad->id_padre);					
+                  $model->departamento = $depto->codigo;
+                }
+                else{
+                  $model->departamento = "";
+                }
             }
             
             $model->id_persona=$inscripcion->id_persona ? $inscripcion->id_persona : 0;
@@ -1097,11 +908,11 @@ class FacturaController extends Controller
             return $this->render('create', [
                 'model' => $model,'detalle_factura'=>  $detalle_factura,'listProducto'=>  $this->toList($id_inscripcion),'listClientes'=> $this->toListClientes(),
                 'listMoneda'=>  Monedas::toList()
-				,'listContacto'=>  Contactos::toList($id_empresa),
-				'listEmpresas'=>  $this->tolistEmpresa()
-				,'listPersonas'=> $this->tolistPersona()
-				,'listImpuestos'=> Impuestos::toList()
-				,'listMedioPago'=> MedioPago::toList()
+                ,'listContacto'=>  Contactos::toList($id_empresa),
+                'listEmpresas'=>  $this->tolistEmpresa()
+                ,'listPersonas'=> $this->tolistPersona()
+                ,'listImpuestos'=> Impuestos::toList()
+                ,'listMedioPago'=> MedioPago::toList()
             ]);
         }           
     }
@@ -1116,7 +927,7 @@ class FacturaController extends Controller
         $model->id_estado_factura=1;
         $model->observaciones="";
         $count = count(Yii::$app->request->post('DetalleFactura', []));
-		$model->cantidadLineas = $count;
+		    $model->cantidadLineas = $count;
         if($count)
         {
             for($i = 1; $i < $count; $i++) {
@@ -1129,6 +940,8 @@ class FacturaController extends Controller
         if (Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {//\yii\base\Model::loadMultiple($detalle_factura, Yii::$app->request->post()
                 $detalle_factura = Yii::$app->request->post('DetalleFactura');
+                $count = count($detalle_factura);
+                $model->cantidadLineas = $count;
                 Yii::$app->response->format = Response::FORMAT_JSON;
 				
 				$modelContacto = $this->findModelContacto($model->id_contacto);
@@ -1248,13 +1061,13 @@ class FacturaController extends Controller
                                 $objClientDispapelesApis = new ClientDispapelesApi();
                                 $informacionEmpresa = $this->findModelInformacionEmpresa();
                                 $model->tipoDocumento= 2;
-								$model->tipoNota = 2; //$model->id_tipo_nota; //1. DEVOLUCIÓN DE PARTE DE LOS BIENES 2. ANULACIÓN DE FACTURA 3. REBAJA TOTAL APLICADA 4. DESCUENTO TOTAL APLICADO 5. RESCISIÓN: NULIDAD POR FALTA DE REQUISITOS 6. OTROS.
+								                $model->tipoNota = 2; //$model->id_tipo_nota; //1. DEVOLUCIÓN DE PARTE DE LOS BIENES 2. ANULACIÓN DE FACTURA 3. REBAJA TOTAL APLICADA 4. DESCUENTO TOTAL APLICADO 5. RESCISIÓN: NULIDAD POR FALTA DE REQUISITOS 6. OTROS.
                                 //$model->identificacionFormat = $this->calculaDigitoVerificador($model->identificacion);
                                 $model->identificacionFormat = $this->getTipoIdentification($model) ? $this->calculaDigitoVerificador($model->identificacion) : '';
                                 $params = $facturaWsdl->loadNC($model,$detalle_factura,$informacionEmpresa,$infoFactura[0],$infoFactura);
                                 //$xmlInvoice = $facturaWsdl->createNC('5ce21110c1e2d29f448f9ee0a10f26fed0238d25',$params);
-								$xmlInvoice = $facturaWsdl->createFactura('a676eeac3c09745ae19d35f952b94e942df9afae', $params); //Desarrollo
-                                //var_dump($xmlInvoice);
+								                $xmlInvoice = $facturaWsdl->createFactura('a676eeac3c09745ae19d35f952b94e942df9afae', $params); //Desarrollo
+                                
                                 $response = $objClientDispapelesApis->enviarFactura($xmlInvoice);
                                 //var_dump($response);die;
                                 $modelFactura = $this->findModel($id);
@@ -1354,7 +1167,7 @@ class FacturaController extends Controller
                 $model->telefonoContacto = $inscripcion->idPersona->telefono;
             }
 
-			$model->tipo_compra = 1;
+			      $model->tipo_compra = 1;
             $model->periodo_pago = 30;
             $model->fecha_vencimiento = date('Y-m-d');
             $model->id_persona=$inscripcion->id_persona ? $inscripcion->id_persona : 0;
@@ -1416,6 +1229,8 @@ class FacturaController extends Controller
         if (Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {//\yii\base\Model::loadMultiple($detalle_factura, Yii::$app->request->post()
                 $detalle_factura = Yii::$app->request->post('DetalleFactura');
+                $count = count($detalle_factura);
+                $model->cantidadLineas = $count;
                 Yii::$app->response->format = Response::FORMAT_JSON;
 
                 //Verificar Si el model is patrocinios
@@ -1437,16 +1252,16 @@ class FacturaController extends Controller
                         return [['respuesta'=>0,'data'=> \yii\widgets\ActiveForm::validate($model)]];
                     $model->id_contacto= NULL;
                 }
-				$model->tipoidentificacion = ($model->idEmpresa->tipoIdentificacion->codigo);
+				        $model->tipoidentificacion = ($model->idEmpresa->tipoIdentificacion->codigo);
                 $model->identificacion = $model->id_empresa ? $model->idEmpresa->identificacion : $model->idPersona->identificacion;
-				$model->verificacion = $model->id_empresa ? $model->idEmpresa->verificacion : ""; 
+				        $model->verificacion = $model->id_empresa ? $model->idEmpresa->verificacion : ""; 
                 $model->clientes=$model->id_empresa ? $model->idEmpresa->nombre : $model->idPersona->nombre.' '.$model->idPersona->apellido;
                 if($model->validate() && $detalle_factura)
                 {
                     $transaction = Yii::$app->db->beginTransaction();
                     try{
                         $model->fecha = $this->FormatoFechas($model->fecha);
-						$model->fecha_vencimiento = $this->FormatoFechas($model->fecha_vencimiento);
+						            $model->fecha_vencimiento = $this->FormatoFechas($model->fecha_vencimiento);
                         $model->fechaemisionordencompra = $this->FormatoFechas($model->fechaemisionordencompra);
                         $session = Yii::$app->session;
                         $event_id = $session->get('event_id');
@@ -1456,18 +1271,18 @@ class FacturaController extends Controller
                         $model->iva=str_replace(",","",$model->iva);
                         $model->tipo_factura = 'FA';
                         $model->id_serie = 2;
-						$model->trm= $model->trm ? floatval(str_replace(",","",$model->trm)) : 0;
-						
+						            $model->trm= $model->trm ? floatval(str_replace(",","",$model->trm)) : 0;
                         $oldFactura = Facturas::find()->where(['=', 'id_evento', $event_id])->andWhere(['numero' => $model->numero])->one();
                         if($oldFactura)
                         {
                             $model->numero = strval(\Yii::$app->params['consecutivoFacturaContingencia'] + 1);
                         }
+                        var_dump(223);
                         if($model->validate())
                         {
                             $this->safeModel($model);
                             $id=$model->getPrimaryKey();
-							$i = 0;
+							              $i = 0;
                             foreach ($detalle_factura as $df) {
                                 $detalle_facturas = new DetalleFactura();
                                 $detalle_facturas->id_factura=$id;
@@ -1477,10 +1292,10 @@ class FacturaController extends Controller
                                 $detalle_facturas->valor=floatval(str_replace(",","",$df['subtotal']));
                                 $detalle_facturas->observacion=$df['descripcion'];
                                 $detalle_facturas->iva=$df['iva'];
-
+                                var_dump(2244);
                                 $v = explode("-",$df['id_inscripcion']);
                                 $detalle_facturas->id_inscripcion=  $v[0] == 'i' ? intval($v[1]) : null;
-
+                                var_dump(22444);
                                 if($v[0] == 'i'){
                                     $modelDetalleRecibos = \app\models\DetalleRecibos::find()->where(['id_inscripcion'=>$v[1]])->all();
                                     foreach ($modelDetalleRecibos as $modelDetalleRecibo)
@@ -1490,21 +1305,21 @@ class FacturaController extends Controller
                                     }
                                     $inscripciones = $this->findModelInscripcion($detalle_facturas->id_inscripcion);
                                     $id_producto = $inscripciones->id_producto;
-									$codigo_producto = $inscripciones->tipo_codigo_producto;
-                                    $nombre_producto = $inscripciones->nombre;
-                                    $impuesto_producto = $inscripciones->tipo_impuesto;
                                     $inscripciones->estado = 2;
                                     $inscripciones->id_factura = $id;
                                     $inscripciones->save(false);
                                 }
-								$modelProductos = $this->findModelProducto($detalle_factura[0]["id_producto"]);
-								$codigo_producto = $modelProductos->tipo_codigo_producto;
-								$nombre_producto = $modelProductos->nombre;
-								$impuesto_producto = $modelProductos->tipo_impuesto;
-								$detalle_factura[$i]["tipo_codigo_producto"] =  $codigo_producto;
-								$detalle_factura[$i]["nombre_producto"] =  $nombre_producto;
-								$detalle_factura[$i]["tipo_impuesto"] = $impuesto_producto;
-								
+                                $modelProductos = $this->findModelProducto($detalle_factura[$i]["id_producto"]);
+                                $codigo_producto = $modelProductos->tipo_codigo_producto;
+                                $nombre_producto = $modelProductos->nombre;
+                                $impuesto_producto = $modelProductos->tipo_impuesto;
+                                $detalle_factura[$i]["tipo_codigo_producto"] =  $codigo_producto;
+                                $detalle_factura[$i]["nombre_producto"] =  $nombre_producto;
+                                $detalle_factura[$i]["tipo_impuesto"] = $impuesto_producto;
+
+
+
+                                var_dump(2);
                                 $detalle_facturas->id_producto= $v[0] == 'i' ? $id_producto : intval($v[1]);
                                 if($detalle_facturas->validate())
                                 {
@@ -1515,7 +1330,7 @@ class FacturaController extends Controller
                                     $transaction->rollBack();
                                     return [['respuesta'=>0,'error'=>$detalle_facturas->getErrors(),'id'=>$detalle_facturas->id_factura]];
                                 }
-								$i++;
+								                $i++;
                             }
                             $transaction->commit();
 
@@ -1535,45 +1350,45 @@ class FacturaController extends Controller
                                 $modelFactura = $this->findModel($id);
                                 $params = $facturaWsdl->loadNC($model, $detalle_factura,$informacionEmpresa);
                                 //$xmlInvoice = $facturaWsdl->createFactura('5ce21110c1e2d29f448f9ee0a10f26fed0238d25', $params);
-								$xmlInvoice = $facturaWsdl->createFactura('a676eeac3c09745ae19d35f952b94e942df9afae', $params); //Desarrollo
+                                $xmlInvoice = $facturaWsdl->createFactura('a676eeac3c09745ae19d35f952b94e942df9afae', $params); //Desarrollo
+                                
                                 $response = $objClientDispapelesApis->enviarFactura($xmlInvoice);
                                 $modelFactura->send_xml = json_encode((array)$xmlInvoice);
                                 $modelFactura->respuesta = json_encode((array)$response->return);
 								
-								if($response->return->estadoProceso == 0){
-									//return [['respuesta'=>3,'id' => $id,"mensaje"=>"1. ".$response->return->descripcionProceso]];
-									//Listado de errores presentados por el WS
-									$listaMensajesProceso = "";
-									foreach($response->return->listaMensajesProceso as $row){
-										if($row->rechazoNotificacion == "R"){
-											$listaMensajesProceso .= $row->descripcionMensaje."\n";
-										}
-									}
-									return [[
-										'respuesta'=>3
-										,'id' => $id
-										,"descripcionProceso" =>" 1. ".$response->return->descripcionProceso
-										,"listaMensajesProceso" => $listaMensajesProceso
-										,'redirect'=>Url::toRoute(['/factura/facturados'])
-									]];
-								}
-								else{
-									//if ($response->return->mensaje == 'OK') {
-									if ($response->return->estadoProceso == 1) {
-										$modelFactura->cufe = $response->return->cufe;
-										$modelFactura->fecha_transmision = $response->return->fechaFactura;
-										$modelFactura->save(false);
-										return [['respuesta'=>1,'id' => $id,'redirect'=>Url::toRoute(['/factura/facturados'])]];
-									}
-									else
-									{
-										$modelFactura->save(false);
-										return [['respuesta'=>2,'error' => 'error','redirect'=>Url::toRoute(['/factura/facturados'])]];
-									}
-								}
+                                if($response->return->estadoProceso == 0){
+                                  //return [['respuesta'=>3,'id' => $id,"mensaje"=>"1. ".$response->return->descripcionProceso]];
+                                  //Listado de errores presentados por el WS
+                                  $listaMensajesProceso = "";
+                                  foreach($response->return->listaMensajesProceso as $row){
+                                    if($row->rechazoNotificacion == "R"){
+                                      $listaMensajesProceso .= $row->descripcionMensaje."\n";
+                                    }
+                                  }
+                                  return [[
+                                    'respuesta'=>3
+                                    ,'id' => $id
+                                    ,"descripcionProceso" =>" 1. ".$response->return->descripcionProceso
+                                    ,"listaMensajesProceso" => $listaMensajesProceso
+                                    ,'redirect'=>Url::toRoute(['/factura/facturados'])
+                                  ]];
+                                }
+                                else{
+                                  //if ($response->return->mensaje == 'OK') {
+                                  if ($response->return->estadoProceso == 1) {
+                                    $modelFactura->cufe = $response->return->cufe;
+                                    $modelFactura->fecha_transmision = $response->return->fechaFactura;
+                                    $modelFactura->save(false);
+                                    return [['respuesta'=>1,'id' => $id,'redirect'=>Url::toRoute(['/factura/facturados'])]];
+                                  }
+                                  else
+                                  {
+                                    $modelFactura->save(false);
+                                    return [['respuesta'=>2,'error' => 'error','redirect'=>Url::toRoute(['/factura/facturados'])]];
+                                  }
+                                }
                             }catch (\SoapFault $e){
-                                //return [['respuesta'=>2,'error' => 'error','redirect'=>Url::toRoute(['/factura/facturados'])]];
-								return [['respuesta'=>3,'id' => $id,"mensaje"=>"2. ".$response->return->descripcionProceso]];
+                                return [['respuesta'=>2,'error' => 'error','redirect'=>Url::toRoute(['/factura/facturados'])]];
                             }
 
                         }
@@ -1623,15 +1438,46 @@ class FacturaController extends Controller
             $model->direccion = $inscripcion->idEmpresa ? $inscripcion->idEmpresa->contactos[0]->direccion : 0;
             $model->telefonoContacto = $inscripcion->idEmpresa ? $inscripcion->idEmpresa->contactos[0]->telefono : 0;
             $model->id_persona=$inscripcion->id_persona ? $inscripcion->id_persona : 0;
+
+            if($inscripcion->idEmpresa) {
+              $model->direccion = $inscripcion->idEmpresa->contactos[0]->direccion;
+              $model->telefonoContacto = $inscripcion->idEmpresa->contactos[0]->telefono;
+              $model->tipoidentificacion = $inscripcion->idEmpresa->tipoIdentificacion->codigo;
+              $model->ciudad = $inscripcion->idEmpresa->ciudad->codigo;
+              if($inscripcion->idPersona->ciudad->id_pais == 1){
+                $depto = $this->findModelDepartamento($inscripcion->idEmpresa->ciudad->id_padre);
+                $model->departamento = $depto->codigo;
+              }
+              else{
+                $model->departamento = "";
+              }
+          } elseif($inscripcion->id_persona) {
+              $model->direccion = $inscripcion->idPersona->direccion;
+              $model->telefonoContacto = $inscripcion->idPersona->telefono;
+              $model->tipoidentificacion = $inscripcion->idPersona->tipoIdentificacion->codigo;
+              $model->ciudad = $inscripcion->idPersona->ciudad->codigo;
+              
+              if($inscripcion->idPersona->ciudad->id_pais == 1){
+                $depto = $this->findModelDepartamento($inscripcion->idPersona->ciudad->id_padre);					
+                $model->departamento = $depto->codigo;
+              }
+              else{
+                $model->departamento = "";
+              }
+          }
+
+
             $model->fecha=Yii::$app->formatter->asDate('now', 'php:d/m/Y');
+            $model->fecha_factura=Yii::$app->formatter->asDate('03-02-2000', 'php:d/m/Y');
+
             return $this->render('create', [
                 'model' => $model,'detalle_factura'=>  $detalle_factura,'listProducto'=>  $this->toList($id_inscripcion),'listClientes'=> $this->toListClientes(),
                 'listMoneda'=>  Monedas::toList()
-				,'listContacto'=>  Contactos::toList($id_empresa)
-				,'listEmpresas'=>  $this->tolistEmpresa()
-				,'listPersonas'=> $this->tolistPersona()
-				,'listImpuestos'=> Impuestos::toList()
-				,'listMedioPago'=> MedioPago::toList()
+                ,'listContacto'=>  Contactos::toList($id_empresa)
+                ,'listEmpresas'=>  $this->tolistEmpresa()
+                ,'listPersonas'=> $this->tolistPersona()
+                ,'listImpuestos'=> Impuestos::toList()
+                ,'listMedioPago'=> MedioPago::toList()
             ]);
         }
     }
@@ -1646,8 +1492,8 @@ class FacturaController extends Controller
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
-    public function actionCreateNote($id=0){
-        
+    public function actionCreateNote($id=0)
+    {
          if(!$this->isUserApproved || !Yii::$app->user->can('facturacion'))
         {
             throw new ForbiddenHttpException;
@@ -1656,8 +1502,8 @@ class FacturaController extends Controller
         $model->id_estado_factura=1;
         $model->observaciones="";
         $count = count(Yii::$app->request->post('DetalleFactura', []));
-		$model->cantidadLineas = $count;
-		if($count)
+	  	$model->cantidadLineas = $count;
+		  if($count)
         {
             for($i = 1; $i < $count; $i++) {
                 $detalle_facturas[] = new DetalleFactura();
@@ -1669,6 +1515,8 @@ class FacturaController extends Controller
         if (Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {
                 $detalle_factura = Yii::$app->request->post('DetalleFactura');
+                $count = count($detalle_factura);
+                $model->cantidadLineas = $count;
                 Yii::$app->response->format = Response::FORMAT_JSON;
 				
 				$model->tipoidentificacion  = $model->idEmpresa->tipoIdentificacion->codigo;
@@ -1788,7 +1636,8 @@ class FacturaController extends Controller
                                 $model->tipoNota = $model->id_tipo_nota; //1. DEVOLUCIÓN DE PARTE DE LOS BIENES 2. ANULACIÓN DE FACTURA 3. REBAJA TOTAL APLICADA 4. DESCUENTO TOTAL APLICADO 5. RESCISIÓN: NULIDAD POR FALTA DE REQUISITOS 6. OTROS.
                                 $params = $facturaWsdl->loadNC($model,$detalle_factura,$informacionEmpresa,$infoFactura);
                                 //$xmlInvoice = $facturaWsdl->createNC('5ce21110c1e2d29f448f9ee0a10f26fed0238d25',$params);
-								$xmlInvoice = $facturaWsdl->createFactura('a676eeac3c09745ae19d35f952b94e942df9afae', $params); //Desarrollo
+								                $xmlInvoice = $facturaWsdl->createFactura('a676eeac3c09745ae19d35f952b94e942df9afae', $params); //Desarrollo
+                                
                                 $response = $objClientDispapelesApis->enviarFactura($xmlInvoice);
                                 $modelFactura = $this->findModel($id);
                                 $modelFactura->send_xml = json_encode((array)$xmlInvoice);
@@ -1939,9 +1788,6 @@ class FacturaController extends Controller
     }
 
 
-
-
-
     public function actionCreateDebit($id=0){
          if(!$this->isUserApproved || !Yii::$app->user->can('facturacion'))
         {
@@ -1951,7 +1797,7 @@ class FacturaController extends Controller
         $model->id_estado_factura=1;
         $model->observaciones="";
         $count = count(Yii::$app->request->post('DetalleFactura', []));
-		$model->cantidadLineas = $count;
+		    $model->cantidadLineas = $count;
         if($count)
         {
             for($i = 1; $i < $count; $i++) {
@@ -1964,6 +1810,8 @@ class FacturaController extends Controller
         if (Yii::$app->request->isAjax) {
             if ($model->load(Yii::$app->request->post())) {//\yii\base\Model::loadMultiple($detalle_factura, Yii::$app->request->post()
                 $detalle_factura = Yii::$app->request->post('DetalleFactura');
+                $count = count($detalle_factura);
+                $model->cantidadLineas = $count;
                 Yii::$app->response->format = Response::FORMAT_JSON;
 
                 //Verificar Si el model is patrocinios
@@ -2075,12 +1923,12 @@ class FacturaController extends Controller
                                 $infoFactura = $this->findModel($model->facturaNC);
                                 $model->identificacionFormat = $this->getTipoIdentification($model) ? $this->calculaDigitoVerificador($model->identificacion) : '';
                                 $model->tipoDocumento= 3; //Nota Debito
-								$model->tipoNota = $model->id_tipo_nota; //7. INTERESES 8. GASTOS POR COBRAR 9. CAMBIO DEL VALOR 10.OTROS
+								                $model->tipoNota = $model->id_tipo_nota; //7. INTERESES 8. GASTOS POR COBRAR 9. CAMBIO DEL VALOR 10.OTROS
                                 $params = $facturaWsdl->loadNC($model,$detalle_factura,$informacionEmpresa,$infoFactura);
                                 
                                 //$xmlInvoice = $facturaWsdl->createND('5ce21110c1e2d29f448f9ee0a10f26fed0238d25', $params);
-								$xmlInvoice = $facturaWsdl->createFactura('a676eeac3c09745ae19d35f952b94e942df9afae', $params); //Desarrollo
-                               // var_dump($xmlInvoice);die;
+								                $xmlInvoice = $facturaWsdl->createFactura('a676eeac3c09745ae19d35f952b94e942df9afae', $params); //Desarrollo
+                                
                                 $response = $objClientDispapelesApis->enviarFactura($xmlInvoice);
                                 $modelFactura = $this->findModel($id);
                                 $modelFactura->send_xml = json_encode((array)$xmlInvoice);
@@ -2119,7 +1967,6 @@ class FacturaController extends Controller
 									}
 								}
                             }catch (\SoapFault $e){
-                                var_dump($e);die;
                                 return [['respuesta'=>2,'error' => 'error','redirect'=>Url::toRoute(['/factura/facturados'])]];
                             }
 
@@ -2183,9 +2030,7 @@ class FacturaController extends Controller
             // $id_inscripcion=1;
             $inscripcion =  $id_inscripcion ? $this->findModelInscripcion($id_inscripcion) : new Inscripciones();
             $id_empresa = $inscripcion->id_empresa ? $inscripcion->id_empresa : 0;
-            //$detalle_factura->id_inscripcion=$id_inscripcion;
-            //$model->id_empresa=$id_empresa;
-            //var_dump($factura['Contacto']['direccion']);die;
+            
             $model->direccion = $factura['Contacto']['direccion'];
             $model->telefonoContacto = $factura['Contacto']['telefono'];
 			
@@ -3988,7 +3833,8 @@ AND i.estado> 0
             (CASE
                 WHEN f.id_persona IS NULL THEN e.nombre 
                 WHEN f.id_persona > 0 THEN concat(p.nombre,' ',p.apellido)
-             END) AS cliente, concat(p.nombre,' ',p.apellido) as persona,m.nombre as moneda , m.simbolo as simbolo,df.observacion as descripcion,df.id_producto,df.id_inscripcion,f.id_contacto,f.id_empresa,f.cufe,
+             END) AS cliente, concat(p.nombre,' ',p.apellido) as persona,m.nombre as moneda , m.simbolo as simbolo,df.observacion as descripcion,
+             df.id_producto,df.id_inscripcion,f.id_contacto,f.id_empresa,f.cufe,
              (CASE
                 WHEN f.id_persona IS NULL THEN e.identificacion 
                 WHEN f.id_persona > 0 THEN p.identificacion
@@ -4468,6 +4314,8 @@ AND i.estado> 0
             if ($model->load(Yii::$app->request->post())) {
                 
                 $detalle_factura = Yii::$app->request->post('DetalleFactura');
+                $count = count($detalle_factura);
+                $model->cantidadLineas = $count;
                 
                 Yii::$app->response->format = Response::FORMAT_JSON;
 				
@@ -4490,10 +4338,8 @@ AND i.estado> 0
                 $model->tipo_factura = 'FA';
                 $model->id_serie = 1;
                 $model->trm= $model->trm ? floatval(str_replace(",","",$model->trm)) : 0;
-                    
-                
-                if($model->validate() && $detalle_factura)
-                {
+
+                if($model->validate() && $detalle_factura){
                     $transaction = Yii::$app->db->beginTransaction();
                     try{
                         $this->safeModel($model);
@@ -4506,32 +4352,38 @@ AND i.estado> 0
                             $detalle_facturas->subtotal=floatval(str_replace(",","",$df['subtotal']));
                             $detalle_facturas->valorTotal=floatval(str_replace(",","",$df['valorTotal']));    
                             $detalle_facturas->valor=floatval(str_replace(",","",$df['subtotal']));
-                            $detalle_facturas->observacion=isset($df['descripcion']) ? $df['descripcion'] : '';
+                            $detalle_facturas->observacion=$df['descripcion'];
                             $detalle_facturas->id_estado_factura = 1;
                             $detalle_facturas->iva=$df['iva'];
                             
-                            $v = explode("-",$df['id_inscripcion']);
-                            $detalle_facturas->id_inscripcion=  $v[0] == 'i' ? intval($v[1]) : null;
-                            if($df['id_inscripcion']>0 && $detalle_facturas->id_inscripcion==null)
-                              $detalle_facturas->id_inscripcion=$df['id_inscripcion'];
-                            if($v[0] == 'i'){
-                                $modelDetalleRecibos = \app\models\DetalleRecibos::find()->where(['id_inscripcion'=>$v[1]])->all();
-                                foreach ($modelDetalleRecibos as $modelDetalleRecibo){
-                                    $modelDetalleRecibo->id_factura = $id;
-                                    $modelDetalleRecibo->save(false);
-                                }
-                                $inscripciones = $this->findModelInscripcion($detalle_facturas->id_inscripcion);
-                                $id_producto = $inscripciones->id_producto;
-                                $inscripciones->estado = 2;
-                                $inscripciones->id_factura = $id;
-                                $inscripciones->save(false);
-                            }
                             $modelProductos = $this->findModelProducto($df["id_producto"]);
                             $detalle_factura[$i]["tipo_codigo_producto"] = $modelProductos->tipo_codigo_producto;
                             $detalle_factura[$i]["nombre_producto"] = $modelProductos->nombre;
                             $detalle_factura[$i]["tipo_impuesto"] = $modelProductos->tipo_impuesto;
-                            $detalle_factura[$i]["valor"] = $detalle_facturas->valor;
                             $detalle_factura[$i]["descripcion"] = $detalle_facturas->observacion;
+
+                            if($df['id_inscripcion']){
+                                $v = explode("-",$df['id_inscripcion']);
+                                $detalle_facturas->id_inscripcion=  $v[0] == 'i' ? intval($v[1]) : null;
+                                if($df['id_inscripcion']>0 && $detalle_facturas->id_inscripcion==null)
+                                  $detalle_facturas->id_inscripcion=$df['id_inscripcion'];
+                                if($v[0] == 'i'){
+                                    $modelDetalleRecibos = \app\models\DetalleRecibos::find()->where(['id_inscripcion'=>$v[1]])->all();
+                                    foreach ($modelDetalleRecibos as $modelDetalleRecibo){
+                                        $modelDetalleRecibo->id_factura = $id;
+                                        $modelDetalleRecibo->save(false);
+                                    }
+                                    $inscripciones = $this->findModelInscripcion($detalle_facturas->id_inscripcion);
+                                    $id_producto = $inscripciones->id_producto;
+                                    $inscripciones->estado = 2;
+                                    $inscripciones->id_factura = $id;
+                                    $inscripciones->save(false);
+                                }
+                                else {
+                                  $inscripciones = $this->findModelInscripcion($detalle_facturas->id_inscripcion);
+                                  $detalle_factura[$i]["nombre_producto"] = $modelProductos->nombre.'\n'.$inscripciones->idPersona->nombre.' '.$inscripciones->idPersona->apellido;
+                                }
+                            }
                             if($df["id_producto"]){
                                 $detalle_facturas->id_producto=$df["id_producto"];
                             }
@@ -4570,63 +4422,47 @@ AND i.estado> 0
                             $modelFactura = $this->findModel($id);
                             $params = $facturaWsdl->loadNC($model, $detalle_factura,$informacionEmpresa); // token antigiuo e2556e2f2dc65b60653fab4fc380996647363a01
                             
-                            //$xmlInvoice = $facturaWsdl->createFactura('5ce21110c1e2d29f448f9ee0a10f26fed0238d25', $params);//Producción
                             $xmlInvoice = $facturaWsdl->createFactura('a676eeac3c09745ae19d35f952b94e942df9afae', $params); //Desarrollo
-							/*print "<pre>";
-							var_dump($xmlInvoice);
-							print "</pre>";
-							exit();*/
-							//var_dump(9);print "<br>";
                             $response = $objClientDispapelesApis->enviarFactura($xmlInvoice);
-							//var_dump(10);print "<br>";
-							$modelFactura->send_xml = json_encode((array)$xmlInvoice);
-							//var_dump(11);print "<br>";
-                            $modelFactura->respuesta = json_encode((array)$response->return);
-							//var_dump(12);print "<br>";
-
-							if($response->return->estadoProceso == 0){
-							    $modelFactura->save(false);
-								//return [['respuesta'=>3,'id' => $id,"mensaje"=>"1. ".$response->return->descripcionProceso]];
-								//Listado de errores presentados por el WS
-								$listaMensajesProceso = "";
-								foreach($response->return->listaMensajesProceso as $row){
-									if($row->rechazoNotificacion == "R"){
-										$listaMensajesProceso .= $row->descripcionMensaje."\n";
-									}
-								}
-								return [[
-									'respuesta'=>4
-									,'id' => $id
-									,"descripcionProceso" =>" 1. ".$response->return->descripcionProceso
-									,"listaMensajesProceso" => $listaMensajesProceso
-									,'redirect'=>Url::toRoute(['/factura/facturados'])
-								]];
-							}
-							else{
-								//if ($response->return->mensaje == 'OK') {
-								if ($response->return->estadoProceso == 1) {
-									$modelFactura->cufe = $response->return->cufe;
-									$modelFactura->fecha_transmision = $response->return->fechaFactura;
-									$modelFactura->save(false);
-									return [['respuesta'=>1,'id' => $id,'redirect'=>Url::toRoute(['/factura/facturados'])]];
-								}
-								else
-								{
-									$modelFactura->save(false);
-									return [['respuesta'=>2,'error' => 'error','redirect'=>Url::toRoute(['/factura/facturados'])]];
-								}
-							}
+							              $modelFactura->send_xml = json_encode((array)$xmlInvoice);
+						                $modelFactura->respuesta = json_encode((array)$response->return);
+                            if($response->return->estadoProceso == 0){
+							                  $modelFactura->save(false);
+								                $listaMensajesProceso = "";
+                                foreach($response->return->listaMensajesProceso as $row){
+                                  if($row->rechazoNotificacion == "R"){
+                                    $listaMensajesProceso .= $row->descripcionMensaje."\n";
+                                  }
+                                }
+                                return [[
+                                  'respuesta'=>4
+                                  ,'id' => $id
+                                  ,"descripcionProceso" =>" 1. ".$response->return->descripcionProceso
+                                  ,"listaMensajesProceso" => $listaMensajesProceso
+                                  ,'redirect'=>Url::toRoute(['/factura/facturados'])
+                                ]];
+                            }
+                            else{
+                              //if ($response->return->mensaje == 'OK') {
+                              if ($response->return->estadoProceso == 1) {
+                                $modelFactura->cufe = $response->return->cufe;
+                                $modelFactura->fecha_transmision = $response->return->fechaFactura;
+                                $modelFactura->save(false);
+                                return [['respuesta'=>1,'id' => $id,'redirect'=>Url::toRoute(['/factura/facturados'])]];
+                              }
+                              else
+                              {
+                                $modelFactura->save(false);
+                                return [['respuesta'=>2,'error' => 'error','redirect'=>Url::toRoute(['/factura/facturados'])]];
+                              }
+                            }
                         }catch (\SoapFault $e){
-                            //return [['respuesta'=>2,'error' => 'error','redirect'=>Url::toRoute(['/factura/facturados'])]];
-							return [['respuesta'=>4,"mensaje"=>"2. - ".$response->return->descripcionProceso]];
-                        }
+                            return [['respuesta'=>2,'error' => 'error','redirect'=>Url::toRoute(['/factura/facturados'])]];
+							          }
                     } catch (Exception $e) {
-                        var_dump($e);
                         $transaction->rollBack();
                         return [['respuesta'=>0,'data'=> \yii\widgets\ActiveForm::validate($model)]];
                     }
-                 
-                    
                 }
                 else {
                     return [['respuesta'=>0,'data'=> \yii\widgets\ActiveForm::validate($model)]];
@@ -4642,30 +4478,32 @@ AND i.estado> 0
             $factura = $this->getFacturas($id);
             $id_inscripcion = 0;
             foreach ($factura['Factura'] as $i=>$df) {
-				$detalle_facturas[$i] = new DetalleFactura();
-                $detalle_facturas[$i]->id=$df['dfId'];
-				$detalle_facturas[$i]->id_factura=$id;
-				$detalle_facturas[$i]->id_producto=$df['id_producto'];
-				$detalle_facturas[$i]->id_inscripcion=$df['id_inscripcion'];	
-				$detalle_facturas[$i]->cantidad=$df['cantidad'];
-				$detalle_facturas[$i]->subtotal=floatval(str_replace(",","",$df['valorSubtotal']));
-				$detalle_facturas[$i]->valorTotal=$df['valorTotal'];
-				$detalle_facturas[$i]->valor=floatval(str_replace(",","",$df['valorSubtotal']));
-				$detalle_facturas[$i]->observacion=$df['descripcion'];
-				$detalle_facturas[$i]->iva=$df['valorIva'];
-				$model->subtotal = $df['subtotal'];
-				$model->iva = $df['iva'];
-				$model->total = $df['total'];
-				$model->id_contacto = $df['id_contacto'];
-				$model->id_empresa=$df['id_empresa'];
-				$model->clientes= $df['id_empresa'] ? 'e-'.$df['id_empresa'] : 'p-'.$df['id_persona'];
-				$model->identificacion=$df['identificaciones'];
-				$model->cufe=$df['cufe'];
-				$numero = $df['numero'];
-				//$id_inscripcion = $df['id_inscripcion'] ? $df['id_inscripcion'] : 0;
-				$contactosList = $df['id_persona'] ? \yii\helpers\ArrayHelper::map(array("0"=>array("id"=>$model->clientes,"nombre"=>"IGUAL AL CLIENTE")), 'id', 'nombre') : Contactos::toList($df['id_empresa']);
-				//var_dump(\yii\helpers\ArrayHelper::map(array("0"=>array("id"=>$model->clientes,"nombre"=>"IGUAL AL CLIENTE")), 'id', 'nombre'));die;
-			}
+              $detalle_facturas[$i] = new DetalleFactura();
+              $detalle_facturas[$i]->id=$df['dfId'];
+              $detalle_facturas[$i]->id_factura=$id;
+              $detalle_facturas[$i]->id_producto=$df['id_producto'];
+              $detalle_facturas[$i]->id_inscripcion=$df['id_inscripcion'];	
+              $detalle_facturas[$i]->cantidad=$df['cantidad'];
+              $detalle_facturas[$i]->subtotal=floatval(str_replace(",","",$df['valorSubtotal']));
+              $detalle_facturas[$i]->valorTotal=$df['valorTotal'];
+              $detalle_facturas[$i]->valor=floatval(str_replace(",","",$df['valorSubtotal']));
+              $detalle_facturas[$i]->descripcion=$df['descripcion'];
+              $detalle_facturas[$i]->iva=$df['valorIva'];
+              $nombre = $df['id_inscripcion'] ? "-".$detalle_facturas[$i]->idInscripcion->idPersona->nombre." ".$detalle_facturas[$i]->idInscripcion->idPersona->apellido : '';
+              $detalle_facturas[$i]->producto=$df['producto'].$nombre;
+              $model->subtotal = $df['subtotal'];
+              $model->iva = $df['iva'];
+              $model->total = $df['total'];
+              $model->id_contacto = $df['id_contacto'];
+              $model->id_empresa=$df['id_empresa'];
+              $model->clientes= $df['id_empresa'] ? 'e-'.$df['id_empresa'] : 'p-'.$df['id_persona'];
+              $model->identificacion=$df['identificaciones'];
+              $model->cufe=$df['cufe'];
+              $numero = $df['numero'];
+              //$id_inscripcion = $df['id_inscripcion'] ? $df['id_inscripcion'] : 0;
+              $contactosList = $df['id_persona'] ? \yii\helpers\ArrayHelper::map(array("0"=>array("id"=>$model->clientes,"nombre"=>"IGUAL AL CLIENTE")), 'id', 'nombre') : Contactos::toList($df['id_empresa']);
+              //var_dump(\yii\helpers\ArrayHelper::map(array("0"=>array("id"=>$model->clientes,"nombre"=>"IGUAL AL CLIENTE")), 'id', 'nombre'));die;
+            }
             $model->numero =  $factura['Factura'][0]['numero'];
             //Si No tiene inscripcion viene de patrocinio
             $model->is_patrocinios = $id_inscripcion > 0 ? 0 : 1;
@@ -4685,14 +4523,14 @@ AND i.estado> 0
             $model->fechaemisionordencompra = $factura['Factura'][0]['fechaemisionordencompra'];
             $model->numeroaceptacioninterno = $factura['Factura'][0]['numeroaceptacioninterno'];
             $model->facturaNumero = $numero;
-			$model->id_serie = $factura["Factura"][0]["id_serie"];
-			$model->fecha =Yii::$app->formatter->asDate( $factura['Factura'][0]['fecha'], 'php:d/m/Y');
+            $model->id_serie = $factura["Factura"][0]["id_serie"];
+            $model->fecha =Yii::$app->formatter->asDate( $factura['Factura'][0]['fecha'], 'php:d/m/Y');
             $model->fecha_factura=Yii::$app->formatter->asDate('01/01/1900', 'php:d/m/Y');
-            //var_dump($detalle_facturas);die;
-			/*var_dump($factura);
-			print "<hr>";
-			var_dump($model);
-			exit();*/
+        
+            /*var_dump($factura);
+            print "<hr>";
+            var_dump($model);
+            exit();*/
             return $this->render('_editForm', [
                 'model' => $model,
                 'title' => $numero,
@@ -4703,9 +4541,9 @@ AND i.estado> 0
                 'listContacto'=>  $contactosList,
                 'listEmpresas'=>  $this->tolistEmpresa(),
                 'listPersonas'=> $this->tolistPersona()
-				,'listImpuestos'=> Impuestos::toList()
-				,'listMedioPago'=> MedioPago::toList()
-				,'listTNCredito'=> TipoNota::toListCredito()
+                ,'listImpuestos'=> Impuestos::toList()
+                ,'listMedioPago'=> MedioPago::toList()
+                ,'listTNCredito'=> TipoNota::toListCredito()
             ]);
         }
         

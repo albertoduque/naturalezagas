@@ -709,32 +709,33 @@ class FacturaWsdl
         date_default_timezone_set('America/Bogota');
         $NCXml =array();
 		
-		$descripcion = $model->tipo_factura == 'FA' || $model->tipo_factura == 'ND' ? 'descripcion' : 'observacion';
+		    $descripcion = $model->tipo_factura == 'FA' || $model->tipo_factura == 'ND' ? 'descripcion' : 'observacion';
 		
-		//Cabeza documento electrónico
+		    //Cabeza documento electrónico
         $NCXml['version'] = $informacionEmpresa ? $informacionEmpresa['version_manual'] : '';
-		$NCXml['tipodocumento'] =  $model->tipoDocumento ? $model->tipoDocumento: '';
-		//$NCXml['prefijo'] = $model->tipo_factura == 'FA' ? 'FENT' : $model->tipo_factura;
-		$NCXml['prefijo'] = $model->tipo_factura == 'FA' ? 'FENT' : $model->tipo_factura;
-		if($model->tipoDocumento == 5)
+		    $NCXml['tipodocumento'] =  $model->tipoDocumento ? $model->tipoDocumento: '';
+		    //$NCXml['prefijo'] = $model->tipo_factura == 'FA' ? 'FENT' : $model->tipo_factura;
+		    $NCXml['prefijo'] = $model->tipo_factura == 'FA' ? 'FENT' : $model->tipo_factura;
+		    if($model->tipoDocumento == 5)
             $NCXml['prefijo'] = 'CONT'; //Factura de Contingencia, se tenia CONT se cambia FC
         if($model->tipo_factura=='NC')
             $NCXml['prefijo'] = "NCNT"; //NOta Crédito, se tiene NCNT se cambia por NC
         if($model->tipo_factura=='ND')
             $NCXml['prefijo'] = "NDNT"; //Nota Débito, se tiene NDNT se cambia por ND
 		
-		$NCXml['consecutivo'] = "".$model->numero;
-		$NCXml['fechafacturacion'] = $model->fecha;
-		$NCXml['cantidadLineas'] = $model->cantidadLineas;
-		$NCXml['tipoNota'] = $model->tipoNota;
+        $NCXml['consecutivo'] = "".$model->numero;
+        $NCXml['fechafacturacion'] = $model->fecha;
+        $NCXml['cantidadLineas'] = $model->cantidadLineas;
+        $NCXml['tipoNota'] = $model->tipoNota;
         $totalBaseImponible = 0;
         $totalbaseconimpuestos = 0;
 		
 		
         foreach ($detalle as $df) {
-            $baseImponible = floatval(str_replace(",","",$model->tipo_factura == 'FA' || $model->tipo_factura == 'ND' ? $df['subtotal'] : $df['valor']));
+            $valores = $model->tipo_factura == 'FA' || $model->tipo_factura == 'ND' ? $df['subtotal'] : $df['valor'];
+            $baseImponible = floatval(str_replace(",","",$valores));
             $totalBaseImponible += $baseImponible;
-            $totalbaseconimpuestos += $df['valor'] + (($df['iva'] * $baseImponible)/100);
+            $totalbaseconimpuestos += $valores + (($df['iva'] * $baseImponible)/100);
             $detalle_factura[] = array(
 									"codigoproducto"=> $df['id_producto'],
 									"tipocodigoproducto"=> $df['tipo_codigo_producto'],
@@ -743,7 +744,7 @@ class FacturaWsdl
 									//"familia"=> "",
 									//"marca"=> "",
 									//"modelo"=> "",
-									"descripcion"=> $df[$descripcion] ? $df['producto']."\n".$df[$descripcion] : $df['producto'],
+									"descripcion"=> $df[$descripcion],
 									"referencia"=> "",
 									"cantidad"=> $df['cantidad'],
 									"unidadmedida"=> "94",
