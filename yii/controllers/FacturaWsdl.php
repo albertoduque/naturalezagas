@@ -744,7 +744,7 @@ class FacturaWsdl
 									//"familia"=> "",
 									//"marca"=> "",
 									//"modelo"=> "",
-									"descripcion"=> $df[$descripcion],
+									"descripcion"=> $df['producto'].$df[$descripcion],
 									"referencia"=> "",
 									"cantidad"=> $df['cantidad'],
 									"unidadmedida"=> "94",

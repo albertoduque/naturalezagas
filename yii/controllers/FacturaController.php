@@ -1277,7 +1277,6 @@ class FacturaController extends Controller
                         {
                             $model->numero = strval(\Yii::$app->params['consecutivoFacturaContingencia'] + 1);
                         }
-                        var_dump(223);
                         if($model->validate())
                         {
                             $this->safeModel($model);
@@ -1292,10 +1291,10 @@ class FacturaController extends Controller
                                 $detalle_facturas->valor=floatval(str_replace(",","",$df['subtotal']));
                                 $detalle_facturas->observacion=$df['descripcion'];
                                 $detalle_facturas->iva=$df['iva'];
-                                var_dump(2244);
+                                
                                 $v = explode("-",$df['id_inscripcion']);
                                 $detalle_facturas->id_inscripcion=  $v[0] == 'i' ? intval($v[1]) : null;
-                                var_dump(22444);
+                              
                                 if($v[0] == 'i'){
                                     $modelDetalleRecibos = \app\models\DetalleRecibos::find()->where(['id_inscripcion'=>$v[1]])->all();
                                     foreach ($modelDetalleRecibos as $modelDetalleRecibo)
@@ -1318,8 +1317,6 @@ class FacturaController extends Controller
                                 $detalle_factura[$i]["tipo_impuesto"] = $impuesto_producto;
 
 
-
-                                var_dump(2);
                                 $detalle_facturas->id_producto= $v[0] == 'i' ? $id_producto : intval($v[1]);
                                 if($detalle_facturas->validate())
                                 {
@@ -1357,6 +1354,7 @@ class FacturaController extends Controller
                                 $modelFactura->respuesta = json_encode((array)$response->return);
 								
                                 if($response->return->estadoProceso == 0){
+                                  $modelFactura->save(false);
                                   //return [['respuesta'=>3,'id' => $id,"mensaje"=>"1. ".$response->return->descripcionProceso]];
                                   //Listado de errores presentados por el WS
                                   $listaMensajesProceso = "";
