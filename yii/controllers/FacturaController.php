@@ -261,7 +261,7 @@ class FacturaController extends Controller
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
                         ELSE df.subtotal
                     END)  as subtotal,sum( CASE WHEN df.iva > 0 AND f.trm > 0 THEN df.iva * df.subtotal * f.trm / 100 
-                         WHEN df.iva > 0 AND f.trm IS NULL THEN df.iva * df.subtotal / 100 
+                         WHEN df.iva > 0 THEN df.iva * df.subtotal / 100 
                     ELSE 0 END)  as iva
                     FROM facturas f 
                     LEFT JOIN detalle_factura df on(df.id_factura=f.id )
@@ -286,10 +286,11 @@ class FacturaController extends Controller
             {
                 array_push($valoresCount,["inscritos"=>$a['inscritos'],"estados"=>$a['estados'],"idEstados"=>$a['idEstados'],"isCount"=>1,"valor"=>$a['subtotal'],"iva"=>$a['iva']]);
             }
+            // Facturados No Facturados
             $sql = "SELECT count(ta.id)as inscritos,'FACTURADOS' as estados,22 as idEstados ,sum(CASE 
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
                         ELSE df.subtotal END)  as subtotal,sum( CASE WHEN df.iva > 0 AND f.trm > 0 THEN df.iva * df.subtotal * f.trm / 100 
-                         WHEN df.iva > 0 AND f.trm IS NULL THEN df.iva * df.subtotal / 100 
+                         WHEN df.iva > 0 THEN df.iva * df.subtotal / 100 
                     ELSE 0 END)  as iva
                     FROM facturas f 
                     LEFT JOIN detalle_factura df on(df.id_factura=f.id )
@@ -310,7 +311,10 @@ class FacturaController extends Controller
             $sql = "SELECT count(ta.id) as inscritos,'NO FACTURADOS' as estados,32 as idEstados,
                     (CASE 
                         WHEN  COUNT(*) > 0 THEN pr.valor * COUNT(*)
-                        ELSE 0  END)  as subtotal 
+                        ELSE 0  END)  as subtotal,
+                        (CASE 
+                        WHEN  COUNT(*) > 0 THEN pr.valor * COUNT(*)
+                        ELSE 0  END) * 0.19  as iva 
                     FROM inscripciones i
                     INNER JOIN personas p on(i.id_persona=p.id)
                     LEFT JOIN productos pr ON(i.id_producto = pr.id)
@@ -320,7 +324,7 @@ class FacturaController extends Controller
             $modelEstadisticasCount=Yii::$app->db->createCommand($sql)->queryAll();
             foreach ($modelEstadisticasCount as $a)
             {
-                array_push($valoresFacturados,["inscritos"=>$a['inscritos'],"estados"=>$a['estados'],"idEstados"=>$a['idEstados'],"isCount"=>0,"valor"=>$a['subtotal'],"iva"=>0]);
+                array_push($valoresFacturados,["inscritos"=>$a['inscritos'],"estados"=>$a['estados'],"idEstados"=>$a['idEstados'],"isCount"=>0,"valor"=>$a['subtotal'],"iva"=>$a['iva']]);
             }
 
             $sql = "SELECT count(distinct f.id)as inscritos,'NOTAS CREDITO' as estados,33 as idEstados ,sum(CASE 
@@ -359,13 +363,13 @@ class FacturaController extends Controller
             $modelEstadisticasCount=Yii::$app->db->createCommand($sql)->queryAll();
             foreach ($modelEstadisticasCount as $a)
             {
-                array_push($valoresPagos,["inscritos"=>$a['inscritos'],"estados"=>$a['estados'],"idEstados"=>$a['idEstados'],"isCount"=>0,"valor"=>$a['subtotal'],"iva"=>$a['iva']]);
+                array_push($valoresPagos,["inscritos"=>$a['inscritos'],"estados"=>$a['estados'],"idEstados"=>$a['idEstados'],"isCount"=>0,"valor"=>2,"iva"=>$a['iva']]);
             }
-            $sql = "SELECT count(f.id) as inscritos,'Cuentas por cobrar' as estados,43 as idEstados ,sum(CASE 
+            $sql = "SELECT count(f.id) as inscritos,'CUENTAS POR COBRAR' as estados,43 as idEstados ,sum(CASE 
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
                         ELSE df.subtotal END)  as subtotal,sum(CASE 
                         WHEN df.iva > 0 AND f.trm > 0 THEN df.iva * df.subtotal * f.trm / 100
-                        WHEN df.iva > 0 AND f.trm IS NULL THEN df.iva * df.subtotal / 100 
+                        WHEN df.iva > 0  THEN df.iva * df.subtotal / 100 
                         ELSE 0  END)  as iva
                     FROM inscripciones i
                     inner join personas p on(i.id_persona=p.id)
@@ -392,7 +396,7 @@ class FacturaController extends Controller
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
                         ELSE df.subtotal END)  as subtotal,sum(CASE 
                         WHEN df.iva > 0 AND f.trm > 0 THEN df.iva * df.subtotal * f.trm / 100
-                        WHEN df.iva > 0 AND f.trm IS NULL THEN df.iva * df.subtotal / 100 
+                        WHEN df.iva > 0 THEN df.iva * df.subtotal / 100 
                         ELSE 0  END)  as iva
                     FROM inscripciones i
                     inner join personas p on(i.id_persona=p.id)
@@ -420,7 +424,7 @@ class FacturaController extends Controller
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
                         ELSE df.subtotal END)  as subtotal,sum(CASE 
                         WHEN df.iva > 0 AND f.trm > 0 THEN df.iva * df.subtotal * f.trm / 100
-                        WHEN df.iva > 0 AND f.trm IS NULL THEN df.iva * df.subtotal / 100 
+                        WHEN df.iva > 0 THEN df.iva * df.subtotal / 100 
                         ELSE 0  END)  as iva
                     FROM inscripciones i
                     inner join personas p on(i.id_persona=p.id)
