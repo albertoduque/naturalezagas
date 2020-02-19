@@ -4325,7 +4325,7 @@ AND i.estado> 0
                 $model->verificacion = $model->id_empresa ? $model->idEmpresa->verificacion : ""; 
                 $model->clientes=$model->id_empresa ? $model->idEmpresa->nombre : $model->idPersona->nombre.' '.$model->idPersona->apellido;
                 $model->fecha = $this->FormatoFechas($model->fecha);
-                $model->fecha_vencimiento = $this->FormatoFechas($model->fecha_vencimiento);
+                $model->fecha_vencimiento = $model->fecha_vencimiento == '0000-00-00' ? '' : $this->FormatoFechas($model->fecha_vencimiento);
                 $model->fechaemisionordencompra = $model->fechaemisionordencompra;
                 $session = Yii::$app->session;
                 $event_id = $session->get('event_id');
@@ -4421,6 +4421,7 @@ AND i.estado> 0
                             $params = $facturaWsdl->loadNC($model, $detalle_factura,$informacionEmpresa); // token antigiuo e2556e2f2dc65b60653fab4fc380996647363a01
                             
                             $xmlInvoice = $facturaWsdl->createFactura('a676eeac3c09745ae19d35f952b94e942df9afae', $params); //Desarrollo
+                            var_dump($xmlInvoice);die;
                             $response = $objClientDispapelesApis->enviarFactura($xmlInvoice);
 							              $modelFactura->send_xml = json_encode((array)$xmlInvoice);
 						                $modelFactura->respuesta = json_encode((array)$response->return);
@@ -4513,6 +4514,7 @@ AND i.estado> 0
             $model->id_moneda = $factura['Factura'][0]['id_moneda'];
             $model->trm = $factura['Factura'][0]['trm'];
             $model->periodo_pago = $factura['Factura'][0]['periodo_pago'] ? $factura['Factura'][0]['periodo_pago'] : 0 ;
+            
             
             $model->fecha_vencimiento = $factura['Factura'][0]['fecha_vencimiento'] == '0000-00-00' ? '' : Yii::$app->formatter->asDate($factura['Factura'][0]['fecha_vencimiento'], 'php:d/m/Y');
             $model->id_impuesto = $factura['Factura'][0]['id_impuesto'];
