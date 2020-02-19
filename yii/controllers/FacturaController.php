@@ -4421,7 +4421,7 @@ AND i.estado> 0
                             $params = $facturaWsdl->loadNC($model, $detalle_factura,$informacionEmpresa); // token antigiuo e2556e2f2dc65b60653fab4fc380996647363a01
                             
                             $xmlInvoice = $facturaWsdl->createFactura('a676eeac3c09745ae19d35f952b94e942df9afae', $params); //Desarrollo
-                            var_dump($xmlInvoice);die;
+                            
                             $response = $objClientDispapelesApis->enviarFactura($xmlInvoice);
 							              $modelFactura->send_xml = json_encode((array)$xmlInvoice);
 						                $modelFactura->respuesta = json_encode((array)$response->return);
