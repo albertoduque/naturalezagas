@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'modified_at',
             // 'deleted',
 
-            ['class' => 'yii\grid\ActionColumn','contentOptions' => ['style' => 'width:70px;'],'header'=>'Acciones','template' => '{update} {delete}',
+            ['class' => 'yii\grid\ActionColumn','contentOptions' => ['style' => 'width:70px;'],'header'=>'Acciones','template' => '{update}',
                 'buttons' => [
                     'delete' => function ($url, $model) {
                         if(!$model['cufe'])

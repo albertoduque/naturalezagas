@@ -4385,6 +4385,7 @@ AND i.estado> 0
                                   $inscripciones = $this->findModelInscripcion($detalle_facturas->id_inscripcion);
                                   $detalle_factura[$i]["nombre_producto"] = $modelProductos->nombre.'\n'.$inscripciones->idPersona->nombre.' '.$inscripciones->idPersona->apellido;
                                 }
+                                $model->is_patrocinios = 0;
                             }
                             if($df["id_producto"]){
                                 $detalle_facturas->id_producto=$df["id_producto"];
