@@ -4648,7 +4648,7 @@ AND i.estado> 0
             $fila['trm'] = $factura['trm'];
             if($factura["serie"] !== 'NCNT')
             {
-                if ($factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48)
+                if ($factura['id_tipo_asistente'] == 50 || $factura['id_tipo_asistente'] == 51 || $factura['id_tipo_asistente'] == 52 || $factura['id_tipo_asistente'] == 48)
                 {
                     $fila['subtotal'] = $factura['valor'] * $trm;
                     $fila['iva'] = ($factura['valor'] * $factura['prodIva'] / 100) * $trm;
@@ -5010,7 +5010,7 @@ AND i.estado> 0
                 LEFT JOIN pais pa on(ci.id_pais=pa.id)
                 LEFT JOIN ciudad cie on(e.id_ciudad=cie.id)
                 LEFT JOIN pais pae on(cie.id_pais=pae.id)
-                WHERE f.is_patrocinios=1 AND df.id_producto=18 AND f.id_serie <3 AND f.id_evento=".$event_id." GROUP BY f.id"  ;
+                WHERE f.is_patrocinios=1 AND df.id_producto=21 AND f.id_serie <3 AND f.id_evento=".$event_id." GROUP BY f.id"  ;
         
         $modelPatrocinios=Yii::$app->db->createCommand($sql)->queryAll();
         $pila2 = array();
@@ -5195,7 +5195,7 @@ AND i.estado> 0
                 LEFT JOIN pais pa on(ci.id_pais=pa.id)
                 LEFT JOIN ciudad cie on(e.id_ciudad=cie.id)
                 LEFT JOIN pais pae on(cie.id_pais=pae.id)
-                WHERE f.is_patrocinios=1 AND f.id_serie = 3 AND df.id_producto=18 AND f.id_evento=".$event_id." GROUP BY f.id"  ;
+                WHERE f.is_patrocinios=1 AND f.id_serie = 3 AND df.id_producto=21 AND f.id_evento=".$event_id." GROUP BY f.id"  ;
         
         $modelPatrocinios=Yii::$app->db->createCommand($sql)->queryAll();
         

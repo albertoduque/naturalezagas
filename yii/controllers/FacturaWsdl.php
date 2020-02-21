@@ -1057,9 +1057,9 @@ class FacturaWsdl
 				//'daniel.morales@bss.morpss.com;comercial@tingersuministros.com' quemado en el codigo
 				'comercial@tingersuministros.com'
 			, "pais"=> $model->id_empresa ? $model->idEmpresa->ciudad->idPais->alias : $model->idPersona->ciudad->idPais->alias
-			, "departamento"=>$model->departamento
-			, "nombreDepartamento"=>ucwords(strtolower($model->departamentoNombre))
-			, "codigoCiudad"=>$model->ciudad
+      , "departamento"=>$model->departamento ? $model->departamento : ''
+			, "nombreDepartamento"=>$model->departamentoNombre ? ucwords(strtolower($model->departamentoNombre)) : ''
+			, "codigoCiudad"=>$model->ciudad ? $model->ciudad : ''
 			, "descripcionCiudad"=> strtoupper($model->id_empresa ? $model->idEmpresa->ciudad->nombre : $model->idPersona->ciudad->nombre)
 			//, "barioLocalidad"=> ""
 			, "direccion"=> $model->direccion
