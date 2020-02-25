@@ -687,7 +687,7 @@ class FacturaController extends Controller
                         return [['respuesta'=>0,'data'=> \yii\widgets\ActiveForm::validate($model)]];
                     $model->id_contacto= NULL;
                 }
-				        $model->tipoidentificacion = $model->idEmpresa->tipoIdentificacion->codigo;
+				        $model->tipoidentificacion  = $model->id_empresa ? $model->idEmpresa->tipoIdentificacion->codigo : $model->idPersona->tipoIdentificacion->codigo;
                 $model->identificacion = $model->id_empresa ? $model->idEmpresa->identificacion : $model->idPersona->identificacion; 
                 $model->verificacion = $model->id_empresa ? $model->idEmpresa->verificacion : ""; 
                 $model->clientes=$model->id_empresa ? $model->idEmpresa->nombre : $model->idPersona->nombre.' '.$model->idPersona->apellido;
@@ -1256,7 +1256,7 @@ class FacturaController extends Controller
                         return [['respuesta'=>0,'data'=> \yii\widgets\ActiveForm::validate($model)]];
                     $model->id_contacto= NULL;
                 }
-				        $model->tipoidentificacion = ($model->idEmpresa->tipoIdentificacion->codigo);
+				        $model->tipoidentificacion  = $model->id_empresa ? $model->idEmpresa->tipoIdentificacion->codigo : $model->idPersona->tipoIdentificacion->codigo;
                 $model->identificacion = $model->id_empresa ? $model->idEmpresa->identificacion : $model->idPersona->identificacion;
 				        $model->verificacion = $model->id_empresa ? $model->idEmpresa->verificacion : ""; 
                 $model->clientes=$model->id_empresa ? $model->idEmpresa->nombre : $model->idPersona->nombre.' '.$model->idPersona->apellido;
@@ -1521,8 +1521,8 @@ class FacturaController extends Controller
                 $model->cantidadLineas = $count;
                 Yii::$app->response->format = Response::FORMAT_JSON;
 				
-				$model->tipoidentificacion  = $model->idEmpresa->tipoIdentificacion->codigo;
-				$model->identificacion = $model->id_empresa ? $model->idEmpresa->identificacion : $model->idPersona->identificacion; 
+                $model->tipoidentificacion  = $model->id_empresa ? $model->idEmpresa->tipoIdentificacion->codigo : $model->idPersona->tipoIdentificacion->codigo;
+				        $model->identificacion = $model->id_empresa ? $model->idEmpresa->identificacion : $model->idPersona->identificacion; 
                 $model->verificacion = $model->id_empresa ? $model->idEmpresa->verificacion : ""; 
                 $model->clientes=$model->id_empresa ? $model->idEmpresa->nombre : $model->idPersona->nombre.' '.$model->idPersona->apellido;
                 if($model->validate() && $detalle_factura)
@@ -1824,8 +1824,8 @@ class FacturaController extends Controller
                     $client = explode("-",$model->clientes);
                     //$client[0]=='p' ? $model->id_persona =  $client[1] : $model->id_empresa =  $client[1];
                 }
-				$model->tipoidentificacion  = $model->idEmpresa->tipoIdentificacion->codigo;
-				$model->identificacion = $model->id_empresa ? $model->idEmpresa->identificacion : $model->idPersona->identificacion; 
+                $model->tipoidentificacion  = $model->id_empresa ? $model->idEmpresa->tipoIdentificacion->codigo : $model->idPersona->tipoIdentificacion->codigo;
+				        $model->identificacion = $model->id_empresa ? $model->idEmpresa->identificacion : $model->idPersona->identificacion; 
                 $model->verificacion = $model->id_empresa ? $model->idEmpresa->verificacion : ""; 
                 $model->clientes=$model->id_empresa ? $model->idEmpresa->nombre : $model->idPersona->nombre.' '.$model->idPersona->apellido;
 				//print "<pre>";
@@ -2856,14 +2856,14 @@ AND i.estado> 0
     public function getContactoFacturacion($factura){
         $sql = "SELECT
                     (CASE
-                            WHEN f.id_contacto IS NULL AND f.id_persona IS NULL THEN UPPER(e.direccion) 
-                     		WHEN f.id_contacto IS NULL AND f.id_empresa IS NULL THEN UPPER(p.direccion) 
-                            WHEN f.id_contacto > 0 THEN co.direccion
+                          WHEN f.id_contacto > 0 THEN co.direccion
+                          WHEN f.id_contacto IS NULL AND f.id_persona > 0 THEN UPPER(p.direccion) 
+                     		  WHEN f.id_contacto IS NULL AND f.id_empresa > 0 THEN UPPER(e.direccion)
                      END) AS direccion,
                     (CASE
-                            WHEN f.id_contacto IS NULL AND f.id_persona IS NULL THEN e.telefono 
+                          WHEN f.id_contacto IS NULL AND f.id_persona IS NULL THEN e.telefono 
                      	    WHEN f.id_contacto IS NULL AND f.id_empresa IS NULL THEN p.telefono 
-                            WHEN f.id_contacto > 0 THEN co.telefono
+                          WHEN f.id_contacto > 0 THEN co.telefono
                      END) AS telefono,
                      (CASE
                             WHEN f.id_contacto IS NULL THEN ''
@@ -2884,13 +2884,15 @@ AND i.estado> 0
                      END) AS pais,
                     IFNULL(e.identificacion,0) as identificacion_empresa,
                     IFNULL(p.identificacion,0) as identificacion_persona,
-                    (CASE
-                            WHEN f.id_contacto IS NULL THEN concat(p.nombre,' ',p.apellido)  
+                    (CASE 
                             WHEN f.id_contacto > 0 THEN co.nombre
+                     		WHEN f.id_contacto IS NULL AND f.id_empresa > 0  THEN con.nombre 
+                     		WHEN f.id_contacto IS NULL AND f.id_empresa IS NULL THEN concat(p.nombre,' ',p.apellido) 
                      END) AS contacto,
-                     (CASE
-                            WHEN f.id_contacto IS NULL THEN p.email 
+                     (CASE 
                             WHEN f.id_contacto > 0 THEN co.correo
+                     		WHEN f.id_contacto IS NULL AND f.id_empresa > 0  THEN con.correo
+                      		WHEN f.id_contacto IS NULL AND f.id_empresa IS NULL THEN p.email
                      END) AS correo,
                     e.nombre as empresa
                     FROM facturas f
@@ -2901,6 +2903,7 @@ AND i.estado> 0
                     LEFT JOIN ciudad cic ON(co.id_ciudad=cic.id)
                     LEFT JOIN pais pac ON(cic.id_pais=pac.id)
                     LEFT JOIN empresas e on (f.id_empresa = e.id)
+                    LEFT JOIN contactos con ON(e.id=con.id_empresa)
                     LEFT JOIN ciudad cie ON(e.id_ciudad=cie.id)
                     LEFT JOIN pais pae ON(cie.id_pais=pae.id)
                     WHERE
@@ -4324,7 +4327,7 @@ AND i.estado> 0
 				        $client = explode("-",$model->clientes);
                 $client[0]=='p' ? $model->id_persona =  $client[1] : $model->id_empresa =  $client[1];
 				
-				        $model->tipoidentificacion  = $model->idEmpresa->tipoIdentificacion->codigo;
+				        $model->tipoidentificacion  = $model->id_empresa ? $model->idEmpresa->tipoIdentificacion->codigo : $model->idPersona->tipoIdentificacion->codigo;
 				        $model->identificacion = $model->id_empresa ? $model->idEmpresa->identificacion : $model->idPersona->identificacion; 
                 $model->verificacion = $model->id_empresa ? $model->idEmpresa->verificacion : ""; 
                 $model->clientes=$model->id_empresa ? $model->idEmpresa->nombre : $model->idPersona->nombre.' '.$model->idPersona->apellido;
