@@ -54,6 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
               'format' => 'raw',
               'headerOptions' => ['style' => 'width:4%;text-align:center'],
               'value'=>function($model){
+                if (!$model['respuesta']) return ''; 
                 $decode = json_decode($model['respuesta'], true);
                 return $decode['descripcionProceso'].'<br>'.json_encode($decode['listaMensajesProceso']);
               }

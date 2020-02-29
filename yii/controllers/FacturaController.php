@@ -4332,7 +4332,7 @@ AND i.estado> 0
                 $model->verificacion = $model->id_empresa ? $model->idEmpresa->verificacion : ""; 
                 $model->clientes=$model->id_empresa ? $model->idEmpresa->nombre : $model->idPersona->nombre.' '.$model->idPersona->apellido;
                 $model->fecha = $this->FormatoFechas($model->fecha);
-                $model->fecha_vencimiento = $model->fecha_vencimiento == '0000-00-00' ? '' : $this->FormatoFechas($model->fecha_vencimiento);
+                $model->fecha_vencimiento = $model->fecha_vencimiento == '0000-00-00' ? '0000-00-00' : $this->FormatoFechas($model->fecha_vencimiento);
                 $model->fechaemisionordencompra = $model->fechaemisionordencompra;
                 $session = Yii::$app->session;
                 $event_id = $session->get('event_id');
