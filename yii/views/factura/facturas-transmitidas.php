@@ -26,11 +26,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
             [
                 'header' => 'Cliente',
                 'format' => 'raw',
-                'headerOptions' => ['style' => 'width:4%;text-align:center'],
+                'headerOptions' => ['style' => 'width:14%;text-align:center'],
                 //'filter' => Html::activeDropDownList($searchModel,'estado_pago',  \app\models\EstadosFactura::tolistFacturas(),['class'=>'form-control','prompt' => 'Todos']),
                 'value' => function($model, $key, $index, $widget) {     // render your custom button
                     $result = '';
@@ -38,15 +37,27 @@ $this->params['breadcrumbs'][] = $this->title;
                         $result = $model->idEmpresa ? $model->idEmpresa->nombre  : $model->idPersona->nombre.' '.$model->idPersona->apellido;
                     return $result;
                 },
-                'headerOptions' => ['style' => 'width:4%;text-align: center;'],
+                'headerOptions' => ['style' => 'width:14%;text-align: center;'],
             ],
             'tipo_factura',
             'numero',
-            [   'label' => 'Total',
+            [   
+                'label' => 'Total',
                 'attribute' => 'total', 'headerOptions' => ['style' => 'text-align: center'],'contentOptions' => ['style' => 'text-align: right'],
                 'value'=>function($model){
                     return  $model['total'] ? Yii::$app->formatter->asDecimal($model['total'],0) : 0;
-                }],
+                }
+            ],
+            [
+              'label' => 'Respuesta',
+              'attribute' => 'respuesta', 'headerOptions' => ['style' => 'text-align: center'],'contentOptions' => ['style' => 'text-align: right'],
+              'format' => 'raw',
+              'headerOptions' => ['style' => 'width:4%;text-align:center'],
+              'value'=>function($model){
+                $decode = json_decode($model['respuesta'], true);
+                return $decode['descripcionProceso'].'<br>'.json_encode($decode['listaMensajesProceso']);
+              }
+            ],
             [
                 'header' => 'Estado Factura',
                 'attribute' => 'cufe',
