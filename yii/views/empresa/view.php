@@ -35,10 +35,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'telefono',
             'telefono_extension',
             'movil',
-            ['attribute' => 'pais','value' => $model->idCiudad->idPais->nombre,],
-            ['attribute' => 'id_ciudad','value' => $model->idCiudad->nombre,],
+            ['attribute' => 'pais','value' => $model->ciudad->idPais->nombre],
+            ['attribute' => 'id_ciudad','value' => $model->ciudad->nombre],
             ['attribute' => 'afiliado_gremio','value' => $model->afiliado_gremio ? 'SI':'NO',],
-            ['attribute' => 'id_sector_empresa','value' => $model->idSectorEmpresa->nombre,],
            
         ],
     ]) ?>

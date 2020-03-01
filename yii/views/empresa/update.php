@@ -16,9 +16,9 @@ $this->params['breadcrumbs'][] = ['label' => $redirectUrl, 'url' => [$redirectUr
 
     <?= $this->render('_form', [
         'model' => $model,'listSectoresEmpresas' => $listSectoresEmpresas,
-        'listPais'=>$listPais
-		,'listDepartamento'=>$listDepartamento
-        ,'listCiudad'=>$listCiudad,
+        'listPais'=>$listPais,
+		    'listDepartamento'=>$listDepartamento,
+        'listCiudad'=>$listCiudad,
         'contacto'=>$contacto,
         'redirectUrl'=>$redirectUrl,
         'listPt'=>$listPt,
