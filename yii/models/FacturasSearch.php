@@ -130,6 +130,8 @@ class FacturasSearch extends Facturas
     {
         $session = Yii::$app->session;
         $event_id = $session->get('event_id');
+        $evento = \app\models\Eventos::findOne($event_id);
+        $year = explode("-",$evento['fecha_hora_inicio']) ;
         //var_dump($params['FacturasSearch']['empresa_nombre']);die;
         $where1 = "i.deleted=0 ";
         $where2 = "df.id_inscripcion is NULL";
@@ -320,7 +322,7 @@ class FacturasSearch extends Facturas
                         $data[$i]['iva']=$pagos['valor'] * 0.19;
                         $data[$i]['total']=$data[$i]['iva'] + $pagos['valor'] ;
                         $data[$i]['estado']=$inscritos['estado'];
-                        $data[$i]['producto']=$inscritos['producto'] ? $inscritos['producto'] : 'INSCRIPCION CONGRESO NATURGAS 2018';
+                        $data[$i]['producto']=$inscritos['producto'] ? $inscritos['producto'] : 'INSCRIPCION CONGRESO NATURGAS '.$year[0];
                         $data[$i]['id_estado_factura']=$inscritos['serie']== 'NCNT' ? 4 : $inscritos['id_estado_factura'];
                         $data[$i]['id_inscripcion']=$inscritos['id_inscripcion'];
                         $data[$i]['estadoInscripcion']=$inscritos['estadoInscripcion'];
@@ -375,7 +377,7 @@ class FacturasSearch extends Facturas
                     $data[$i]['iva']=$pagos['valor'] * 0.19;
                     $data[$i]['total']=$data[$i]['iva'] + $pagos['valor'] ;
                     $data[$i]['estado']=$inscritos['estado'];
-                    $data[$i]['producto']=$inscritos['producto'] ? $inscritos['producto'] : 'INSCRIPCION CONGRESO NATURGAS 2018';
+                    $data[$i]['producto']=$inscritos['producto'] ? $inscritos['producto'] : 'INSCRIPCION CONGRESO NATURGAS '.$year[0];
                     $data[$i]['id_estado_factura']=$inscritos['serie']== 'NCNT' ? 4 : $inscritos['id_estado_factura'];
                     $data[$i]['id_inscripcion']=$inscritos['id_inscripcion'];
                     $data[$i]['estadoInscripcion']=$inscritos['estadoInscripcion'];
@@ -438,7 +440,7 @@ class FacturasSearch extends Facturas
                         $data[$i]['iva']=$pagos['valor'] * 0.19;
                         $data[$i]['total']=$data[$i]['iva'] + $pagos['valor'] ;
                         $data[$i]['estado']=$inscritos['estado'];
-                        $data[$i]['producto']=$inscritos['producto'] ? $inscritos['producto'] : 'INSCRIPCION CONGRESO NATURGAS 2018';
+                        $data[$i]['producto']=$inscritos['producto'] ? $inscritos['producto'] : 'INSCRIPCION CONGRESO NATURGAS '.$year[0];
                         $data[$i]['id_estado_factura']=$inscritos['serie']== 'NCNT' ? 4 : $inscritos['id_estado_factura'];
                         $data[$i]['id_inscripcion']=$inscritos['id_inscripcion'];
                         $data[$i]['estadoInscripcion']=$inscritos['estadoInscripcion'];
@@ -493,7 +495,7 @@ class FacturasSearch extends Facturas
                     $data[$i]['iva']=$pagos['valor'] * 0.19;
                     $data[$i]['total']=$data[$i]['iva'] + $pagos['valor'] ;
                     $data[$i]['estado']=$inscritos['estado'];
-                    $data[$i]['producto']=$inscritos['producto'] ? $inscritos['producto'] : 'INSCRIPCION CONGRESO NATURGAS 2018';
+                    $data[$i]['producto']=$inscritos['producto'] ? $inscritos['producto'] : 'INSCRIPCION CONGRESO NATURGAS '.$year[0];
                     $data[$i]['id_estado_factura']=$inscritos['serie']== 'NCNT' ? 4 : $inscritos['id_estado_factura'];
                     $data[$i]['id_inscripcion']=$inscritos['id_inscripcion'];
                     $data[$i]['estadoInscripcion']=$inscritos['estadoInscripcion'];
