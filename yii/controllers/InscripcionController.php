@@ -281,35 +281,30 @@ class InscripcionController extends Controller
     
     
     public function actionCambiarInscrito($idInscrito=0){
-      
         if (Yii::$app->request->isAjax) {
-            if($va=Yii::$app->request->post())
-            {
+            if($va=Yii::$app->request->post()){
                 Yii::$app->response->format = Response::FORMAT_JSON;
-                if(isset($va['Inscripciones']['id_persona']))
-                {
-                       $model = Inscripciones::findOne($va['Inscripciones']['id_cambio']);
-                       $modelnew = Inscripciones::findOne($va['Inscripciones']['id_persona']);
-                       $detalleFactura = \app\models\DetalleFactura::findOne(["id_inscripcion"=>$va['Inscripciones']['id_cambio']]);
-                       $detalleFactura->id_inscripcion=$modelnew->id;
+                if(isset($va['Inscripciones']['id_persona'])){
+                    $model = Inscripciones::findOne($va['Inscripciones']['id_cambio']);
+                    $modelnew = Inscripciones::findOne($va['Inscripciones']['id_persona']);
+                    $detalleFactura = \app\models\DetalleFactura::findOne(["id_inscripcion"=>$va['Inscripciones']['id_cambio']]);
+                    $detalleFactura->id_inscripcion=$modelnew->id;
 
-                       $model->estado=0;
-                       $modelnew->estado=2;
-                       $transaction = Yii::$app->db->beginTransaction();
-                       try{
-
-                           $model->save(false);
-                           $modelnew->save(false);
-                           $detalleFactura->save(false);
-                           $transaction->commit();
-                           return [['respuesta'=>1,'id'=>$modelnew->id]];
-                       } catch (Exception $ex) {
-                           $transaction->rollBack();
-                           return [['respuesta'=>0,'data'=> ActiveForm::validate($model)]];
-                       }
+                    $model->estado=0;
+                    $modelnew->estado=2;
+                    $transaction = Yii::$app->db->beginTransaction();
+                    try{
+                        $model->save(false);
+                        $modelnew->save(false);
+                        $detalleFactura->save(false);
+                        $transaction->commit();
+                        return [['respuesta'=>1,'id'=>$modelnew->id]];
+                    } catch (Exception $ex) {
+                        $transaction->rollBack();
+                        return [['respuesta'=>0,'data'=> ActiveForm::validate($model)]];
+                    }
                 }
-                else if(isset($va['Inscripciones']['id_cambio']))
-                {
+                else if(isset($va['Inscripciones']['id_cambio'])){
                     $model = Inscripciones::findOne($va['Inscripciones']['id_cambio']);
                     $model->estado=$va['Inscripciones']['estado'];
                     $model->save();
@@ -317,14 +312,10 @@ class InscripcionController extends Controller
                 }
                 //$va['Inscripciones']['estado'];
             }
-            else
-            {
+            else {
                 $inscrito = Inscripciones::findOne($idInscrito);
                 $inscrito->id_cambio=$idInscrito;
-
                 $idEmpresa = $inscrito->id_empresa;
-
-                //var_dump( $this->toListInscritos($idEmpresa));die;toListInscritos($idEmpresa)
                 return $this->renderAjax('cambiar-inscrito', [
                             'model' => $inscrito,
                             'listInscrito'=>  $this->toListInscritos($idEmpresa,1)
