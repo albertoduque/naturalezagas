@@ -4572,8 +4572,9 @@ AND i.estado> 0
                             WHEN f.id_serie = 1   THEN 'FENT'
                             WHEN f.id_serie = 2   THEN 'CONT'
                             WHEN f.id_serie = 3   THEN 'NCNT'
-                     END) AS serie,p.id_tipo_asistente,i.is_presence,df.nc_id,f.trm,f.id_moneda,m.simbolo
-				FROM facturas f
+                     END) AS serie,p.id_tipo_asistente,i.is_presence,df.nc_id,
+                     f.trm,f.id_moneda,m.simbolo,ta.facturable
+				        FROM facturas f
                 LEFT JOIN detalle_factura df ON(f.id=df.id_factura)
               	LEFT JOIN productos pro ON (df.id_producto=pro.id)
                 LEFT JOIN inscripciones i ON (df.id_inscripcion=i.id)
@@ -4587,10 +4588,11 @@ AND i.estado> 0
                 LEFT JOIN pais pa on(ci.id_pais=pa.id)
                 LEFT JOIN ciudad cie on(e.id_ciudad=cie.id)
                 LEFT JOIN pais pae on(cie.id_pais=pae.id)
-                WHERE f.is_patrocinios=0 AND (f.id_serie = 1 OR f.id_serie= 2) AND (i.is_presence = 1 OR (i.is_presence = 0 AND f.id > 0)) AND f.id_evento=".$event_id;
+                WHERE f.is_patrocinios=0 AND (f.id_serie = 1 OR f.id_serie= 2)
+                AND (i.is_presence = 1 OR (i.is_presence = 0 AND f.id > 0)) 
+                AND f.id_evento=".$event_id;
         
         $modelFactura=Yii::$app->db->createCommand($sql)->queryAll();
-        
         $pila = array();
         $i=0;
         $fila = array();
@@ -4652,7 +4654,7 @@ AND i.estado> 0
             $fila['trm'] = $factura['trm'];
             if($factura["serie"] !== 'NCNT')
             {
-                if ($factura['id_tipo_asistente'] == 50 || $factura['id_tipo_asistente'] == 51 || $factura['id_tipo_asistente'] == 52 || $factura['id_tipo_asistente'] == 48)
+                if ($factura['facturable'] == 'SI')
                 {
                     $fila['subtotal'] = $factura['valor'] * $trm;
                     $fila['iva'] = ($factura['valor'] * $factura['prodIva'] / 100) * $trm;
@@ -4691,12 +4693,16 @@ AND i.estado> 0
              
         }
         //sin facturas
-        $sql = "SELECT i.id as idInscripcion,pr.iva as prodIva,ta.nombre as participante,e.nombre as empresa,p.identificacion as cedula,ca.nombre as cargo,p.email,e.identificacion as nit,i.created_at as fecha_inscripcion,pa.nombre as pais,ci.nombre as ciudad,p.nombre,p.apellido,p.telefono,e.direccion as direccion,
-            (CASE
-                WHEN i.id_persona IS NULL THEN e.nombre 
-                WHEN i.id_persona > 0 THEN concat(p.nombre,' ',p.apellido)
-             END) AS cliente, concat(p.nombre,' ',p.apellido) as persona,p.id_tipo_asistente,i.is_presence
-				FROM inscripciones i
+        $sql = "SELECT i.id as idInscripcion,pr.iva as prodIva,ta.nombre as participante,e.nombre as empresa,
+              p.identificacion as cedula,ca.nombre as cargo,p.email,e.identificacion as nit,
+              i.created_at as fecha_inscripcion,pa.nombre as pais,ci.nombre as ciudad,p.nombre,
+              p.apellido,p.telefono,e.direccion as direccion,
+              (CASE
+                  WHEN i.id_persona IS NULL THEN e.nombre 
+                  WHEN i.id_persona > 0 THEN concat(p.nombre,' ',p.apellido)
+              END) AS cliente, concat(p.nombre,' ',p.apellido) as persona,
+              p.id_tipo_asistente,i.is_presence,ta.facturable
+				        FROM inscripciones i
                 LEFT JOIN personas p ON (i.id_persona=p.id)
                 LEFT JOIN empresas e ON (i.id_empresa = e.id)
                 LEFT JOIN tipo_asistentes ta on(p.id_tipo_asistente=ta.id)
@@ -4730,11 +4736,11 @@ AND i.estado> 0
             $fila['trm']='';
             $pagos = $this->getTotalInscripciones($factura['idInscripcion']);
             
-            if ($factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48){
+            if ($factura['facturable'] == 'SI'){
                 $fila['subtotal'] = $pagos['valor'];
                 $fila['iva'] = ($pagos['valor'] * $factura['prodIva'] / 100);
                 $fila['total'] = ($fila['iva'] + $pagos['valor']);
-                $fila['serie'] = $factura['serie'];
+                $fila['serie'] = '';
             }else{
                 $fila['subtotal'] = 'N/A';
                 $fila['iva'] = 'N/A';
@@ -4742,11 +4748,11 @@ AND i.estado> 0
                 $fila['serie'] = 'N/A';
             }
             
-            $fila['pagado'] = $factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48 ? ' ' : 'N/A';
-            $fila['factura'] = $factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48 ? ' ' : 'N/A'; 
+            $fila['pagado'] = $factura['facturable'] == 'SI' ? ' ' : 'N/A';
+            $fila['factura'] = $factura['facturable'] == 'SI' ? ' ' : 'N/A'; 
             $fila['fecha_factura'] = ' ';
-            $fila['estados_factura'] = $factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48 ? "No Facturado" : 'N/A';
-            $fila['estado_pago'] = $factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48 ? ' ' : 'N/A';
+            $fila['estados_factura'] = $factura['facturable'] == 'SI' ? "No Facturado" : 'N/A';
+            $fila['estado_pago'] = $factura['facturable'] == 'SI' ? ' ' : 'N/A';
             $fila['nc_id'] = '';
             array_push($pila, $fila);
              
@@ -4780,17 +4786,18 @@ AND i.estado> 0
                 df.valorTotal,pro.nombre as producto ,f.observaciones,ta.nombre as participante,e.nombre as empresa,p.identificacion as cedula,ca.nombre as cargo,
                 p.email,e.identificacion as nit,ef.nombre as estados_factura,i.created_at as fecha_inscripcion,pa.nombre as pais,ci.nombre as ciudad,p.nombre,p.apellido,
                 p.telefono,
-            (CASE
-                WHEN i.id_persona IS NULL THEN e.nombre 
-                WHEN i.id_persona > 0 THEN concat(p.nombre,' ',p.apellido)
-             END) AS cliente, concat(p.nombre,' ',p.apellido) as persona,m.nombre as moneda , m.simbolo as simbolo,f.fecha as fecha_empresa,pae.nombre as pais_empresa,
-             cie.nombre as ciudad_empresa,i.id as idInscripcion,
-               (CASE
-                            WHEN f.id_serie = 1   THEN 'FENT'
-                            WHEN f.id_serie = 2   THEN 'CONT'
-                            WHEN f.id_serie = 3   THEN 'NCNT'
-                     END) AS serie,p.id_tipo_asistente,i.is_presence,df.nc_id,f.trm,f.id_moneda
-				FROM facturas f
+                (CASE
+                    WHEN i.id_persona IS NULL THEN e.nombre 
+                    WHEN i.id_persona > 0 THEN concat(p.nombre,' ',p.apellido)
+                END) AS cliente, concat(p.nombre,' ',p.apellido) as persona,m.nombre as moneda , m.simbolo as simbolo,f.fecha as fecha_empresa,pae.nombre as pais_empresa,
+                cie.nombre as ciudad_empresa,i.id as idInscripcion,
+                  (CASE
+                                WHEN f.id_serie = 1   THEN 'FENT'
+                                WHEN f.id_serie = 2   THEN 'CONT'
+                                WHEN f.id_serie = 3   THEN 'NCNT'
+                        END) AS serie,p.id_tipo_asistente,i.is_presence,df.nc_id,
+                        f.trm,f.id_moneda,ta.facturable
+                FROM facturas f
                 LEFT JOIN detalle_factura df ON(f.id=df.id_factura)
               	LEFT JOIN productos pro ON (df.id_producto=pro.id)
                 LEFT JOIN inscripciones i ON (df.id_inscripcion=i.id)
@@ -4863,7 +4870,7 @@ AND i.estado> 0
             $trm = $factura['id_moneda'] <> 1 && $factura['trm']? $factura['trm'] : 1;
             if($factura["serie"] !== 'NCNT')
             {
-                if ($factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48)
+                if ($factura['facturable'] == 'SI')
                 {
                     $fila['subtotal'] = $factura['valor'] * $trm;
                     $fila['iva'] = ($factura['valor'] * $factura['prodIva'] / 100) * $trm;
@@ -4903,8 +4910,9 @@ AND i.estado> 0
             (CASE
                 WHEN i.id_persona IS NULL THEN e.nombre 
                 WHEN i.id_persona > 0 THEN concat(p.nombre,' ',p.apellido)
-             END) AS cliente, concat(p.nombre,' ',p.apellido) as persona,p.id_tipo_asistente,i.is_presence
-				FROM inscripciones i
+             END) AS cliente, concat(p.nombre,' ',p.apellido) as persona,
+             p.id_tipo_asistente,i.is_presence,ta.facturable
+				        FROM inscripciones i
                 LEFT JOIN personas p ON (i.id_persona=p.id)
                 LEFT JOIN empresas e ON (i.id_empresa = e.id)
                 LEFT JOIN tipo_asistentes ta on(p.id_tipo_asistente=ta.id)
@@ -4936,7 +4944,7 @@ AND i.estado> 0
             $pagos = $this->getTotalInscripciones($factura['idInscripcion']);
             if($factura["serie"] !== 'NCNT')
             {
-                if ($factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48)
+                if ($factura['facturable'] == 'SI')
                 {
                     $fila['subtotal'] = $pagos['valor'];
                     $fila['iva'] = ($pagos['valor'] * $factura['prodIva'] / 100);
@@ -4957,11 +4965,11 @@ AND i.estado> 0
                 $fila['total'] = (($fila['iva'] + $pagos['valor'])* -1);
                 
             }
-            $fila['pagado'] = $factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48 ? ' ' : 'N/A';
-            $fila['factura'] = $factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48 ? ' ' : 'N/A'; 
+            $fila['pagado'] = $factura['facturable'] == 'SI' ? ' ' : 'N/A';
+            $fila['factura'] = $factura['facturable'] == 'SI' ? ' ' : 'N/A'; 
             $fila['fecha_factura'] = ' ';
-            $fila['estados_factura'] = $factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48 ? "No Facturado" : 'N/A';
-            $fila['estado_pago'] = $factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48 ? ' ' : 'N/A';
+            $fila['estados_factura'] = $factura['facturable'] == 'SI' ? "No Facturado" : 'N/A';
+            $fila['estado_pago'] = $factura['facturable'] == 'SI' ? ' ' : 'N/A';
             // $fila['nc_id'] = '';
             array_push($pila, $fila);
              
@@ -5014,7 +5022,7 @@ AND i.estado> 0
                 LEFT JOIN pais pa on(ci.id_pais=pa.id)
                 LEFT JOIN ciudad cie on(e.id_ciudad=cie.id)
                 LEFT JOIN pais pae on(cie.id_pais=pae.id)
-                WHERE f.is_patrocinios=1 AND df.id_producto=21 AND f.id_serie <3 AND f.id_evento=".$event_id." GROUP BY f.id"  ;
+                WHERE f.is_patrocinios=1 AND pro.inscripciones='N' AND f.id_serie <3 AND f.id_evento=".$event_id." GROUP BY f.id"  ;
         
         $modelPatrocinios=Yii::$app->db->createCommand($sql)->queryAll();
         $pila2 = array();
@@ -5183,8 +5191,8 @@ AND i.estado> 0
                             WHEN f.id_serie = 1   THEN 'FENT'
                             WHEN f.id_serie = 2   THEN 'CONT'
                             WHEN f.id_serie = 3   THEN 'NCNT'
-                     END) AS serie,nc.factura_id,f.id_moneda,f.trm,m.simbolo
-				FROM facturas f
+                     END) AS serie,nc.factura_id,f.id_moneda,f.trm,m.simbolo,ta.facturable
+				        FROM facturas f
                 LEFT JOIN detalle_factura df ON(f.id=df.id_factura)
                 LEFT JOIN relacion_nc_factura nc on(nc.nc_id=f.id)
               	LEFT JOIN productos pro ON (df.id_producto=pro.id)
@@ -5199,7 +5207,7 @@ AND i.estado> 0
                 LEFT JOIN pais pa on(ci.id_pais=pa.id)
                 LEFT JOIN ciudad cie on(e.id_ciudad=cie.id)
                 LEFT JOIN pais pae on(cie.id_pais=pae.id)
-                WHERE f.is_patrocinios=1 AND f.id_serie = 3 AND df.id_producto=21 AND f.id_evento=".$event_id." GROUP BY f.id"  ;
+                WHERE f.is_patrocinios=1 AND f.id_serie = 3 AND pro.inscripciones='N' AND f.id_evento=".$event_id." GROUP BY f.id"  ;
         
         $modelPatrocinios=Yii::$app->db->createCommand($sql)->queryAll();
         
@@ -5284,7 +5292,7 @@ AND i.estado> 0
             $trm = $factura['id_moneda'] <> 1 && $factura['trm']? $factura['trm'] : 1;
             if($factura["serie"] !== 'NCNT')
             {
-                if ($factura['id_tipo_asistente'] == 37 || $factura['id_tipo_asistente'] == 38 || $factura['id_tipo_asistente'] == 39 || $factura['id_tipo_asistente'] == 48)
+                if ($factura['facturable'] == 'SI')
                 {
                     $fila['subtotal'] = $factura['valor'] * $trm;
                     $fila['iva'] = ($factura['valor'] * $factura['prodIva'] / 100) * $trm;
