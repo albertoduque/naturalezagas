@@ -607,7 +607,7 @@ class FacturaController extends Controller
         ]);
     }
     
-     protected function findModelDetalleFactura($id)
+    protected function findModelDetalleFactura($id)
     {
         
         $dataProvider = new ActiveDataProvider([
@@ -4011,14 +4011,14 @@ AND i.estado> 0
                     INNER JOIN personas p ON(i.id_persona=p.id)
                     INNER JOIN tipo_asistentes ta on(p.id_tipo_asistente=ta.id)
                     LEFT JOIN facturas f ON(i.id_factura=f.id)
-INNER JOIN detalle_factura df ON (df.id_factura=f.id)
+                    INNER JOIN detalle_factura df ON (df.id_factura=f.id)
                     LEFT JOIN relacion_nc_factura nc ON(nc.factura_id=f.id)
                     LEFT JOIN estados_factura ef ON(ef.id=df.id_estado_factura)
                     WHERE p.id_evento = ".$event_id."
                     and ta.facturable='SI'
                     and ef.id is not null
-and i.is_presence=1 
-and nc.nc_id is null
+                    and i.is_presence=1 
+                    and nc.nc_id is null
                     GROUP BY ef.id order by 3";
             $modelEstadisticasCount=Yii::$app->db->createCommand($sql)->queryAll();
             foreach ($modelEstadisticasCount as $a)
@@ -4171,16 +4171,17 @@ and nc.nc_id is null
                     INNER JOIN tipo_asistentes ta on(p.id_tipo_asistente=ta.id)
                     WHERE 
                       i.is_presence=1
-AND i.estado> 0
-                     AND p.id_evento=".$event_id."
+                      AND i.estado> 0
+                      AND p.id_evento=".$event_id."
                     GROUP BY p.id_tipo_asistente";
             $inscritosTipo=Yii::$app->db->createCommand($sql)->queryAll();
            
-       
+        $evento = \app\models\Eventos::findOne($session->get('event_id'));
+        $year = explode("-",$evento['fecha_hora_inicio']) ;
         $my_html= $this->renderPartial('estadisticas2', ['modelEstadisticasCount' => $valoresCount,'modelPatrocinios'=>$patrocinios,
         'modelEstadisticasSum' => $valoresEstadisticos,'pdf'=>0,'inscritosTipo'=>$inscritosTipo,
         'valoresFacturados'=>$valoresFacturados,'valoresSinPagos'=>$valoresSinPagos,'valoresPagos'=>$valoresPagos,
-        'patrociniosFacturados'=>$patrociniosFacturados,'valoresCC'=>$valoresCC,'pdf'=>1
+        'patrociniosFacturados'=>$patrociniosFacturados,'valoresCC'=>$valoresCC,'pdf'=>1,'year'=>$year[0]
         ]);
         $mpdf = new mPDF('','A4',0,'Arial','11','12','24','8','15','8', 'L');
         $sourcePath = 'tablepdf.css';

@@ -43,7 +43,7 @@ background-color:#fff;		}
 </style>
     <div class="row" >
         <p>NATURGAS<br>Asociación Colombiana de Gas Natural
-        <br>Informe de Ingresos Totales Inscripciones Congreso 2019<br>
+        <br>Informe de Ingresos Totales Inscripciones Congreso <?=$year?><br>
         Informe a: <?=  date("j/n/Y") ?>
         </p>
         <div class="col-lg-12">
@@ -205,7 +205,7 @@ background-color:#fff;		}
     <page_break>
     <div class="row" >
         <p>NATURGAS<br>Asociación Colombiana de Gas Natural
-        <br>Informe de Cuentas por Cobrar Inscripciones Congreso 2019<br>
+        <br>Informe de Cuentas por Cobrar Inscripciones Congreso <?=$year?><br>
         Informe a: <?=  date("j/n/Y") ?>
         </p>
         <div class="col-lg-12">
@@ -270,7 +270,7 @@ background-color:#fff;		}
     <page_break>     
     <div class="row" >
         <p>NATURGAS<br>Asociación Colombiana de Gas Natural
-        <br>Informe de Patrocinios Inscripciones Congreso 2019<br>
+        <br>Informe de Patrocinios Inscripciones Congreso <?=$year?><br>
         Informe a: <?=  date("j/n/Y") ?>
         </p>
         <div class="col-lg-12">
@@ -384,7 +384,7 @@ background-color:#fff;		}
     <page_break>
     <div class="row">
         <p>NATURGAS<br>Asociación Colombiana de Gas Natural
-        <br>Informe de Participantes Inscripciones Congreso 2019<br>
+        <br>Informe de Participantes Inscripciones Congreso <?=$year?><br>
         Informe a: <?=  date("j/n/Y") ?>
         </p>
         <div class="col-lg-12">
