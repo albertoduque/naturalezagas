@@ -5007,6 +5007,7 @@ AND i.estado> 0
                             WHEN f.id_serie = 1   THEN 'FENT'
                             WHEN f.id_serie = 2   THEN 'CONT'
                             WHEN f.id_serie = 3   THEN 'NCNT'
+                            WHEN f.id_serie = 4   THEN 'NDNT'
                      END) AS serie,df.nc_id,m.simbolo,f.trm
 				FROM facturas f
                 LEFT JOIN detalle_factura df ON(f.id=df.id_factura)
@@ -5153,7 +5154,6 @@ AND i.estado> 0
     public function actionGenerarExcelNc(){
         $session = Yii::$app->session;
         $event_id = $session->get('event_id');
-        
         $sql = "SELECT f.id as id_factura,f.numero,pro.iva as prodIva,f.subtotal,f.total,f.iva,f.fecha,df.cantidad,df.valor,df.subtotal as valorsubtotal,df.valorTotal,pro.nombre as producto ,f.observaciones,ta.nombre as participante,e.nombre as empresa,p.identificacion as cedula,ca.nombre as cargo,p.email,e.identificacion as nit,ef.nombre as estados_factura,i.created_at as fecha_inscripcion,pa.nombre as pais,ci.nombre as ciudad,p.nombre,p.apellido,p.telefono,
             (CASE
                 WHEN i.id_persona IS NULL THEN e.nombre 
@@ -5163,8 +5163,9 @@ AND i.estado> 0
                             WHEN f.id_serie = 1   THEN 'FENT'
                             WHEN f.id_serie = 2   THEN 'CONT'
                             WHEN f.id_serie = 3   THEN 'NCNT'
+                            WHEN f.id_serie = 4   THEN 'NDNT'
                      END) AS serie,p.id_tipo_asistente,i.is_presence,nc.factura_id,m.simbolo,f.trm,f.id_moneda
-				FROM facturas f
+				        FROM facturas f
                 LEFT JOIN detalle_factura df ON(f.id=df.id_factura)
                 LEFT JOIN relacion_nc_factura nc on(nc.nc_id=f.id)
               	LEFT JOIN productos pro ON (df.id_producto=pro.id)
@@ -5179,7 +5180,7 @@ AND i.estado> 0
                 LEFT JOIN pais pa on(ci.id_pais=pa.id)
                 LEFT JOIN ciudad cie on(e.id_ciudad=cie.id)
                 LEFT JOIN pais pae on(cie.id_pais=pae.id)
-                WHERE f.is_patrocinios=0 AND f.id_serie = 3 AND (i.is_presence = 1 OR (i.is_presence = 0 AND f.id > 0)) AND f.id_evento=".$event_id;
+                WHERE f.is_patrocinios=0 AND f.id_serie IN(3,4) AND (i.is_presence = 1 OR (i.is_presence = 0 AND f.id > 0)) AND f.id_evento=".$event_id;
         
         $modelFactura=Yii::$app->db->createCommand($sql)->queryAll();
         $sql = "SELECT f.id as id_factura,pro.iva as prodIva,f.numero,f.subtotal,f.total,f.iva,f.fecha,df.cantidad,df.valor,df.subtotal as valorsubtotal,df.valorTotal,pro.nombre as producto ,f.observaciones,ta.nombre as participante,e.nombre as empresa,p.identificacion as cedula,ca.nombre as cargo,p.email,e.identificacion as nit,ef.nombre as estados_factura,i.created_at as fecha_inscripcion,pa.nombre as pais,ci.nombre as ciudad,p.nombre,p.apellido,p.telefono,
@@ -5191,6 +5192,7 @@ AND i.estado> 0
                             WHEN f.id_serie = 1   THEN 'FENT'
                             WHEN f.id_serie = 2   THEN 'CONT'
                             WHEN f.id_serie = 3   THEN 'NCNT'
+                            WHEN f.id_serie = 4   THEN 'NDNT'
                      END) AS serie,nc.factura_id,f.id_moneda,f.trm,m.simbolo,ta.facturable
 				        FROM facturas f
                 LEFT JOIN detalle_factura df ON(f.id=df.id_factura)
@@ -5207,7 +5209,7 @@ AND i.estado> 0
                 LEFT JOIN pais pa on(ci.id_pais=pa.id)
                 LEFT JOIN ciudad cie on(e.id_ciudad=cie.id)
                 LEFT JOIN pais pae on(cie.id_pais=pae.id)
-                WHERE f.is_patrocinios=1 AND f.id_serie = 3 AND pro.inscripciones='N' AND f.id_evento=".$event_id." GROUP BY f.id"  ;
+                WHERE f.is_patrocinios=1 AND f.id_serie IN(3,4) AND pro.inscripciones='N' AND f.id_evento=".$event_id." GROUP BY f.id"  ;
         
         $modelPatrocinios=Yii::$app->db->createCommand($sql)->queryAll();
         
@@ -5290,7 +5292,7 @@ AND i.estado> 0
             $fila['moneda'] = $factura['simbolo'];
             $fila['trm']=$factura['trm'];
             $trm = $factura['id_moneda'] <> 1 && $factura['trm']? $factura['trm'] : 1;
-            if($factura["serie"] !== 'NCNT')
+            if($factura["serie"] !== 'NCNT' && $factura["serie"] !== 'NCNT')
             {
                 if ($factura['facturable'] == 'SI')
                 {
@@ -5330,7 +5332,7 @@ AND i.estado> 0
         }
 
         foreach ($modelPatrocinios as $factura){
-             $sql = "SELECT
+            $sql = "SELECT
                     (CASE
                             WHEN f.id_contacto IS NULL AND f.id_persona IS NULL THEN UPPER(e.direccion) 
                      		WHEN f.id_contacto IS NULL AND f.id_empresa IS NULL THEN UPPER(p.direccion) 
@@ -5397,21 +5399,22 @@ AND i.estado> 0
             $fila['moneda'] = $factura['simbolo'];
             $fila['trm']=$factura['trm'];
             $trm = $factura['id_moneda'] <> 1 && $factura['trm']? $factura['trm'] : 1;
-            $fila['subtotal'] = $factura["serie"] !== 'NCNT' ? $factura['subtotal'] * $trm : $factura['subtotal'] * $trm;
-            $fila['iva'] = $factura["serie"] !== 'NCNT' ? $factura['iva'] * $trm : ($factura['iva'] * $trm);
-            $fila['total'] = $factura["serie"] !== 'NCNT' ? $factura['total'] * $trm : ($factura['total'] * $trm );
+             
+            $fila['subtotal'] = $factura["serie"] !== 'NCNT' && $factura["serie"] !== 'NDNT' ? $factura['subtotal'] * $trm : $factura['subtotal'] * $trm;
+            $fila['iva'] = $factura["serie"] !== 'NCNT' && $factura["serie"] !== 'NDNT' ? $factura['iva'] * $trm : ($factura['iva'] * $trm);
+            $fila['total'] = $factura["serie"] !== 'NCNT' && $factura["serie"] !== 'NDNT' ? $factura['total'] * $trm : ($factura['total'] * $trm );
+            
             //$fila['pagado'] =   $this->getPagos($factura['id_factura']);
             $fila['serie'] = $factura["serie"];
             $fila['factura'] = $factura['numero'];
-            if($factura['factura_id']){
-                $modelFactura = $this->findModel($factura['factura_id']);
+            $fila['facturaNumero'] = '';
+            if($factura['factura_id'] && ($modelFactura = Facturas::findOne($factura['factura_id'])) !== null){
                 $serie = $modelFactura->id_serie ==1 ? 'FENT' : 'CONT';
+                $fila['facturaNumero'] = $serie.'-'.$modelFactura->numero;
             }
-            $fila['facturaNumero'] = $factura['factura_id'] ? $serie.'-'.$modelFactura->numero : '';
             //$fila['ciudad_'] = $modelContacto['estados_factura'];
 
             array_push($pila2, $fila);
-
         }
 
 
