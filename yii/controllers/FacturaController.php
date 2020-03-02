@@ -351,14 +351,14 @@ class FacturaController extends Controller
                     INNER JOIN personas p ON(i.id_persona=p.id)
                     INNER JOIN tipo_asistentes ta on(p.id_tipo_asistente=ta.id)
                     LEFT JOIN facturas f ON(i.id_factura=f.id)
-					INNER JOIN detalle_factura df ON (df.id_factura=f.id)
+					          INNER JOIN detalle_factura df ON (df.id_factura=f.id AND i.id=df.id_inscripcion)
                     LEFT JOIN relacion_nc_factura nc ON(nc.factura_id=f.id)
                     LEFT JOIN estados_factura ef ON(ef.id=df.id_estado_factura)
                     WHERE p.id_evento = ".$event_id."
                     and ta.facturable='SI'
                     and ef.id is not null
-					and i.is_presence=1 
-					and nc.nc_id is null
+					          and i.is_presence=1 
+					          and nc.nc_id is null
                     GROUP BY ef.id order by 3";
             $modelEstadisticasCount=Yii::$app->db->createCommand($sql)->queryAll();
             foreach ($modelEstadisticasCount as $a)
@@ -376,7 +376,7 @@ class FacturaController extends Controller
                     LEFT JOIN detalle_recibos dr ON(i.id=dr.id_inscripcion)
                     inner join tipo_asistentes ta on(p.id_tipo_asistente=ta.id)
                     left join facturas f on(i.id_factura=f.id)
-                    left join detalle_factura df on(i.id=df.id_inscripcion)
+                    left join detalle_factura df on(i.id=df.id_inscripcion AND i.id=df.id_inscripcion)
                     left join relacion_nc_factura nc on(nc.factura_id=f.id)
                     where ta.facturable='SI'
                      and i.is_presence=1 
@@ -385,7 +385,6 @@ class FacturaController extends Controller
                     and f.id_serie <>3
                     and df.nc_id is null
                     AND i.estado> 0
-                    AND (ta.id=38 OR ta.id=37)
                     and dr.id_inscripcion is null";
             $modelEstadisticasCount=Yii::$app->db->createCommand($sql)->queryAll();
             foreach ($modelEstadisticasCount as $a)
@@ -412,7 +411,7 @@ class FacturaController extends Controller
                     and f.id_serie <>3
                     and df.nc_id is null
                     AND i.estado> 0
-                    AND ta.id=38
+                    AND ta.id=51
                     and dr.id_inscripcion is null";
             $modelEstadisticasCount=Yii::$app->db->createCommand($sql)->queryAll();
             foreach ($modelEstadisticasCount as $a)
@@ -440,7 +439,7 @@ class FacturaController extends Controller
                     and f.id_serie <>3
                     and df.nc_id is null
                     AND i.estado> 0
-                    AND ta.id=37
+                    AND ta.id=50
                     and dr.id_inscripcion is null";
             $modelEstadisticasCount=Yii::$app->db->createCommand($sql)->queryAll();
             foreach ($modelEstadisticasCount as $a)
@@ -2660,14 +2659,14 @@ class FacturaController extends Controller
                     INNER JOIN personas p ON(i.id_persona=p.id)
                     INNER JOIN tipo_asistentes ta on(p.id_tipo_asistente=ta.id)
                     LEFT JOIN facturas f ON(i.id_factura=f.id)
-INNER JOIN detalle_factura df ON (df.id_factura=f.id)
+                    INNER JOIN detalle_factura df ON (df.id_factura=f.id AND df.id_inscripcion=i.id)
                     LEFT JOIN relacion_nc_factura nc ON(nc.factura_id=f.id)
                     LEFT JOIN estados_factura ef ON(ef.id=df.id_estado_factura)
                     WHERE p.id_evento = ".$event_id."
                     and ta.facturable='SI'
                     and ef.id is not null
-and i.is_presence=1 
-and nc.nc_id is null
+                    and i.is_presence=1 
+                    and nc.nc_id is null
                     GROUP BY ef.id order by 3";
             $modelEstadisticasCount=Yii::$app->db->createCommand($sql)->queryAll();
             foreach ($modelEstadisticasCount as $a)
@@ -2685,7 +2684,7 @@ and nc.nc_id is null
                     LEFT JOIN detalle_recibos dr ON(i.id=dr.id_inscripcion)
                     inner join tipo_asistentes ta on(p.id_tipo_asistente=ta.id)
                     left join facturas f on(i.id_factura=f.id)
-                    left join detalle_factura df on(i.id=df.id_inscripcion)
+                    left join detalle_factura df on(i.id=df.id_inscripcion AND df.id_inscripcion=i.id)
                     left join relacion_nc_factura nc on(nc.factura_id=f.id)
                     where ta.facturable='SI'
                      and i.is_presence=1 
@@ -2694,7 +2693,6 @@ and nc.nc_id is null
                     and f.id_serie <>3
                     and df.nc_id is null
                     AND i.estado> 0
-                    AND (ta.id=38 OR ta.id=37)
                     and dr.id_inscripcion is null";
             $modelEstadisticasCount=Yii::$app->db->createCommand($sql)->queryAll();
             foreach ($modelEstadisticasCount as $a)
@@ -2721,7 +2719,7 @@ and nc.nc_id is null
                     and f.id_serie <>3
                     and df.nc_id is null
                     AND i.estado> 0
-                    AND ta.id=38
+                    AND ta.id=51
                     and dr.id_inscripcion is null";
             $modelEstadisticasCount=Yii::$app->db->createCommand($sql)->queryAll();
             foreach ($modelEstadisticasCount as $a)
@@ -2749,7 +2747,7 @@ and nc.nc_id is null
                     and f.id_serie <>3
                     and df.nc_id is null
                     AND i.estado> 0
-                    AND ta.id=37
+                    AND ta.id=50
                     and dr.id_inscripcion is null";
             $modelEstadisticasCount=Yii::$app->db->createCommand($sql)->queryAll();
             foreach ($modelEstadisticasCount as $a)
@@ -4011,7 +4009,7 @@ AND i.estado> 0
                     INNER JOIN personas p ON(i.id_persona=p.id)
                     INNER JOIN tipo_asistentes ta on(p.id_tipo_asistente=ta.id)
                     LEFT JOIN facturas f ON(i.id_factura=f.id)
-                    INNER JOIN detalle_factura df ON (df.id_factura=f.id)
+                    INNER JOIN detalle_factura df ON (df.id_factura=f.id AND df.id_inscripcion=i.id)
                     LEFT JOIN relacion_nc_factura nc ON(nc.factura_id=f.id)
                     LEFT JOIN estados_factura ef ON(ef.id=df.id_estado_factura)
                     WHERE p.id_evento = ".$event_id."
@@ -4045,7 +4043,6 @@ AND i.estado> 0
                     and f.id_serie <>3
                     and df.nc_id is null
                     AND i.estado> 0
-                    AND (ta.id=38 OR ta.id=37)
                     and dr.id_inscripcion is null";
             $modelEstadisticasCount=Yii::$app->db->createCommand($sql)->queryAll();
             foreach ($modelEstadisticasCount as $a)
@@ -4072,7 +4069,7 @@ AND i.estado> 0
                     and f.id_serie <>3
                     and df.nc_id is null
                     AND i.estado> 0
-                    AND ta.id=38
+                    AND ta.id=51
                     and dr.id_inscripcion is null";
             $modelEstadisticasCount=Yii::$app->db->createCommand($sql)->queryAll();
             foreach ($modelEstadisticasCount as $a)
@@ -4100,7 +4097,7 @@ AND i.estado> 0
                     and f.id_serie <>3
                     and df.nc_id is null
                     AND i.estado> 0
-                    AND ta.id=37
+                    AND ta.id=50
                     and dr.id_inscripcion is null";
             $modelEstadisticasCount=Yii::$app->db->createCommand($sql)->queryAll();
             foreach ($modelEstadisticasCount as $a)
