@@ -389,7 +389,8 @@ class FacturaController extends Controller
             $modelEstadisticasCount=Yii::$app->db->createCommand($sql)->queryAll();
             foreach ($modelEstadisticasCount as $a)
             {
-                array_push($valoresPagos,["inscritos"=>$a['inscritos'],"estados"=>$a['estados'],"idEstados"=>$a['idEstados'],"isCount"=>0,"valor"=>$a['subtotal'] ? $a['subtotal'] : 0,"iva"=>$a['iva'] ? $a['iva'] : 0]);
+              //Elimino mientras se valida
+               // array_push($valoresPagos,["inscritos"=>$a['inscritos'],"estados"=>$a['estados'],"idEstados"=>$a['idEstados'],"isCount"=>0,"valor"=>$a['subtotal'] ? $a['subtotal'] : 0,"iva"=>$a['iva'] ? $a['iva'] : 0]);
             }
             $sql = "SELECT count(f.id) as inscritos,'Cuentas por cobrar Afiliado' as estados,43 as idEstados ,sum(CASE 
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
