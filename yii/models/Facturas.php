@@ -64,6 +64,9 @@ class Facturas extends \yii\db\ActiveRecord
             ['fecha_vencimiento', 'required', 'when' => function($model) {
                 return $model->tipo_compra == 'CREDITO' && $model->tipoDocumento == 1;
             }],
+            ['trm', 'compare', 'compareValue' => 0, 'operator' => '>', 'when' => function($model) {
+              return $model->id_moneda !== 1;
+            }],
              ['id_tipo_nota', 'required', 'when' => function($model) {
                 return $model->tipoDocumento == 2 || $model->tipoDocumento == 3;
             }],
