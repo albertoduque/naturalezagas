@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-
+use yii\web\View;
 /* @var $this yii\web\View */
 /* @var $model app\models\Productos */
 /* @var $form yii\widgets\ActiveForm */
@@ -18,7 +18,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'descripcion')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'valor')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'valor')->textInput(['maxlength' => true,'class'=>'form-control','value'=> $model['valor'] ? Yii::$app->formatter->asDecimal($model['valor'],0): '']) ?>
 
     <?= $form->field($model, 'iva')->textInput(['maxlength' => true]) ?>
 
@@ -34,3 +34,13 @@ use yii\widgets\ActiveForm;
     <?php ActiveForm::end(); ?>
 
 </div>
+<?php
+$this->registerJs(
+    "$('document').ready(function(){
+		  $('#productos-valor').maskMoney({thousands:',', precision:'0'});
+    });",
+    View::POS_READY,
+    'remover-sites'
+);
+?> 
+

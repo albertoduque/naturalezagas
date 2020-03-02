@@ -42,7 +42,7 @@ class Productos extends \yii\db\ActiveRecord
             [['nombre', 'id_evento', 'valor','tipo_impuesto'], 'required'],
             [['id_evento', 'deleted', 'tipo_impuesto'], 'integer'],
             [['descripcion'], 'string'],
-            [['valor','iva'], 'number'],
+            [['iva'], 'number'],
             [['created_at', 'modified_at','activo'], 'safe'],
             [['nombre'], 'string', 'max' => 255],
             [['imagen'], 'string', 'max' => 50],

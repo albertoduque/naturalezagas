@@ -71,11 +71,12 @@ class ProductoController extends Controller
         $model->tipo_codigo_producto='999';
 
         if ($model->load(Yii::$app->request->post())) {
+            $model->valor=str_replace(",","",$model->valor);
             if($model->save())
                 return $this->redirect(['index']);
             else
                 var_dump ($model->getErrors ());die;
-                 return $this->render('create', [
+            return $this->render('create', [
                 'model' => $model,'listEventos'=>  \app\models\Eventos::toList()
             ]);
         } else {
@@ -95,7 +96,9 @@ class ProductoController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+          $model->valor=str_replace(",","",$model->valor);
+          if ($model->save())
             return $this->redirect(['index']);
         } else {
             return $this->render('update', [
