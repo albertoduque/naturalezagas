@@ -2574,7 +2574,7 @@ class FacturaController extends Controller
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
                         ELSE df.subtotal
                     END)  as subtotal,sum( CASE WHEN df.iva > 0 AND f.trm > 0 THEN df.iva * df.subtotal * f.trm / 100 
-                         WHEN df.iva > 0 AND f.trm IS NULL THEN df.iva * df.subtotal / 100 
+                         WHEN df.iva > 0  THEN df.iva * df.subtotal / 100 
                     ELSE 0 END)  as iva
                     FROM facturas f 
                     LEFT JOIN detalle_factura df on(df.id_factura=f.id )
@@ -2602,7 +2602,7 @@ class FacturaController extends Controller
             $sql = "SELECT count(ta.id)as inscritos,'FACTURADOS' as estados,22 as idEstados ,sum(CASE 
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
                         ELSE df.subtotal END)  as subtotal,sum( CASE WHEN df.iva > 0 AND f.trm > 0 THEN df.iva * df.subtotal * f.trm / 100 
-                         WHEN df.iva > 0 AND f.trm IS NULL THEN df.iva * df.subtotal / 100 
+                         WHEN df.iva > 0 THEN df.iva * df.subtotal / 100 
                     ELSE 0 END)  as iva
                     FROM facturas f 
                     LEFT JOIN detalle_factura df on(df.id_factura=f.id )
@@ -2678,7 +2678,7 @@ class FacturaController extends Controller
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
                         ELSE df.subtotal END)  as subtotal,sum(CASE 
                         WHEN df.iva > 0 AND f.trm > 0 THEN df.iva * df.subtotal * f.trm / 100
-                        WHEN df.iva > 0 AND f.trm IS NULL THEN df.iva * df.subtotal / 100 
+                        WHEN df.iva > 0  THEN df.iva * df.subtotal / 100 
                         ELSE 0  END)  as iva
                     FROM inscripciones i
                     inner join personas p on(i.id_persona=p.id)
@@ -2704,7 +2704,7 @@ class FacturaController extends Controller
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
                         ELSE df.subtotal END)  as subtotal,sum(CASE 
                         WHEN df.iva > 0 AND f.trm > 0 THEN df.iva * df.subtotal * f.trm / 100
-                        WHEN df.iva > 0 AND f.trm IS NULL THEN df.iva * df.subtotal / 100 
+                        WHEN df.iva > 0 THEN df.iva * df.subtotal / 100 
                         ELSE 0  END)  as iva
                     FROM inscripciones i
                     inner join personas p on(i.id_persona=p.id)
@@ -2732,7 +2732,7 @@ class FacturaController extends Controller
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
                         ELSE df.subtotal END)  as subtotal,sum(CASE 
                         WHEN df.iva > 0 AND f.trm > 0 THEN df.iva * df.subtotal * f.trm / 100
-                        WHEN df.iva > 0 AND f.trm IS NULL THEN df.iva * df.subtotal / 100 
+                        WHEN df.iva > 0 THEN df.iva * df.subtotal / 100 
                         ELSE 0  END)  as iva
                     FROM inscripciones i
                     inner join personas p on(i.id_persona=p.id)
@@ -3924,7 +3924,7 @@ AND i.estado> 0
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
                         ELSE df.subtotal
                     END)  as subtotal,sum( CASE WHEN df.iva > 0 AND f.trm > 0 THEN df.iva * df.subtotal * f.trm / 100 
-                         WHEN df.iva > 0 AND f.trm IS NULL THEN df.iva * df.subtotal / 100 
+                         WHEN df.iva > 0 THEN df.iva * df.subtotal / 100 
                     ELSE 0 END)  as iva
                     FROM facturas f 
                     LEFT JOIN detalle_factura df on(df.id_factura=f.id )
@@ -3952,7 +3952,7 @@ AND i.estado> 0
             $sql = "SELECT count(ta.id)as inscritos,'FACTURADOS' as estados,22 as idEstados ,sum(CASE 
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
                         ELSE df.subtotal END)  as subtotal,sum( CASE WHEN df.iva > 0 AND f.trm > 0 THEN df.iva * df.subtotal * f.trm / 100 
-                         WHEN df.iva > 0 AND f.trm IS NULL THEN df.iva * df.subtotal / 100 
+                         WHEN df.iva > 0 THEN df.iva * df.subtotal / 100 
                     ELSE 0 END)  as iva
                     FROM facturas f 
                     LEFT JOIN detalle_factura df on(df.id_factura=f.id )
@@ -4028,7 +4028,7 @@ AND i.estado> 0
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
                         ELSE df.subtotal END)  as subtotal,sum(CASE 
                         WHEN df.iva > 0 AND f.trm > 0 THEN df.iva * df.subtotal * f.trm / 100
-                        WHEN df.iva > 0 AND f.trm IS NULL THEN df.iva * df.subtotal / 100 
+                        WHEN df.iva > 0 THEN df.iva * df.subtotal / 100 
                         ELSE 0  END)  as iva
                     FROM inscripciones i
                     inner join personas p on(i.id_persona=p.id)
@@ -4054,7 +4054,7 @@ AND i.estado> 0
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
                         ELSE df.subtotal END)  as subtotal,sum(CASE 
                         WHEN df.iva > 0 AND f.trm > 0 THEN df.iva * df.subtotal * f.trm / 100
-                        WHEN df.iva > 0 AND f.trm IS NULL THEN df.iva * df.subtotal / 100 
+                        WHEN df.iva > 0 THEN df.iva * df.subtotal / 100 
                         ELSE 0  END)  as iva
                     FROM inscripciones i
                     inner join personas p on(i.id_persona=p.id)
@@ -4082,7 +4082,7 @@ AND i.estado> 0
                         WHEN f.trm > 0 THEN df.subtotal * f.trm
                         ELSE df.subtotal END)  as subtotal,sum(CASE 
                         WHEN df.iva > 0 AND f.trm > 0 THEN df.iva * df.subtotal * f.trm / 100
-                        WHEN df.iva > 0 AND f.trm IS NULL THEN df.iva * df.subtotal / 100 
+                        WHEN df.iva > 0 THEN df.iva * df.subtotal / 100 
                         ELSE 0  END)  as iva
                     FROM inscripciones i
                     inner join personas p on(i.id_persona=p.id)
