@@ -44,16 +44,24 @@ class EmpresaSearch extends Empresas
     {
         $session = Yii::$app->session;
         $event_id = $session->get('event_id');
-        $query = Empresas::find()
-        ->select(['empresas.*', 'facturas.is_patrocinios'])
-        ->leftJoin('facturas', 'facturas.id_empresa = empresas.id')
-        ->where(['=','empresas.id_evento',$event_id]);
+        $evento = \app\models\Eventos::findOne($session->get('event_id'));
+        if($evento['tipo']==2)
+          $query = Empresas::find()->where(['=','empresas.id_evento',$event_id]);
+        else {
+          $query = Empresas::find()
+          ->select(['empresas.*', 'facturas.is_patrocinios'])
+          ->leftJoin('facturas', 'facturas.id_empresa = empresas.id')
+          ->where(['=','empresas.id_evento',$event_id]);
+        }
         
         
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+              'pageSize' => 15,
+          ],
         ]);
         
         $dataProvider->sort->attributes["is_patrocinios"]["asc"] = ["facturas.is_patrocinios" => SORT_ASC];
