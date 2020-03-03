@@ -84,7 +84,7 @@ class Facturas extends \yii\db\ActiveRecord
 				,'porcentajeIva','subtotal', 'iva', 'total','is_patrocinios','clientes'
 				,'identificacion', 'verificacion','facturaNC','facturas','serie','respuesta','id_serie','trm',
 				'fecha_vencimiento','orden_compra','numeroaceptacioninterno','fechaemisionordencompra',
-				'cantidadLineas','fecha_factura'], 'safe'],
+				'cantidadLineas','fecha_factura','fecha'], 'safe'],
             [['numero','facturaNumero'], 'string', 'max' => 20],
             //[['numero'], 'unique'],
             //['numero', 'unique', 'targetAttribute' => ['id_evento','numero'=>'tipo_factura']],
