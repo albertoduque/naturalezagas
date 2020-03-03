@@ -793,7 +793,7 @@ class FacturaController extends Controller
                                 $params = $facturaWsdl->loadNC($model, $detalle_factura,$informacionEmpresa); // token antigiuo e2556e2f2dc65b60653fab4fc380996647363a01
                                 
 								                $xmlInvoice = $facturaWsdl->createFactura('a676eeac3c09745ae19d35f952b94e942df9afae', $params); //Desarrollo
-                                
+                                var_dump($xmlInvoice);die;
                                 $response = $objClientDispapelesApis->enviarFactura($xmlInvoice);
 								
 								                $modelFactura->send_xml = json_encode((array)$xmlInvoice);
@@ -906,8 +906,9 @@ class FacturaController extends Controller
             }
             
             $model->id_persona=$inscripcion->id_persona ? $inscripcion->id_persona : 0;
-            $model->fecha=Yii::$app->formatter->asDate('now', 'php:d/m/Y');
-            $model->fecha_factura=Yii::$app->formatter->asDate('03-02-2000', 'php:d/m/Y');
+            $date = date('d-m-Y');
+            $model->fecha= Yii::$app->formatter->asDate($date.Yii::$app->getTimeZone(), 'php:d/m/Y');
+            $model->fecha_factura= Yii::$app->formatter->asDate($date.Yii::$app->getTimeZone(), 'php:d/m/Y');
             
             return $this->render('create', [
                 'model' => $model,'detalle_factura'=>  $detalle_factura,'listProducto'=>  $this->toList($id_inscripcion),'listClientes'=> $this->toListClientes(),
@@ -1187,7 +1188,7 @@ class FacturaController extends Controller
         $date=  Yii::$app->request->post('date','');
         $serie=  Yii::$app->request->post('serie','');
         $number=  Yii::$app->request->post('number','');
-        $serie = $serie ==1 ? 'FA' : 'NC';
+        $serie = $serie ==1 || $serie == 2 ? 'FA' : 'NC';
 
         $sql = "SELECT * FROM facturas WHERE tipo_factura='".$serie."' order by fecha DESC";
         $modelFactura=Yii::$app->db->createCommand($sql)->queryOne();
@@ -1201,8 +1202,6 @@ class FacturaController extends Controller
 
         $numberValidataion = $number >= $desdeInfo && $number <= $hastaInfo;
 
-
-        var_dump($numberValidataion);
 
         $date = $this->FormatoFechas($date);
         $band= $modelFactura['fecha'] > $date ? 0 : 1;
@@ -2554,7 +2553,7 @@ class FacturaController extends Controller
         $ano = substr($fecha, -4);
         // fechal final realizada el cambio de formato a las fechas europeas5
         $fecha = $ano.'-'.$mes.'-'.$dia;
-   
+    
     return $fecha;
     }
     

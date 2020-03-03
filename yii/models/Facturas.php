@@ -65,9 +65,11 @@ class Facturas extends \yii\db\ActiveRecord
                 return $model->tipo_compra == 'CREDITO' && $model->tipoDocumento == 1;
             }],
             ['trm', 'compare', 'compareValue' => 0, 'operator' => '>', 'when' => function($model) {
-              return $model->id_moneda !== 1;
-            }],
-             ['id_tipo_nota', 'required', 'when' => function($model) {
+              return $model->id_moneda > 1;
+            }, 'whenClient' => "function (attribute, value) {
+              return $('#facturas-id_moneda').val() > '1';
+            }"],
+            ['id_tipo_nota', 'required', 'when' => function($model) {
                 return $model->tipoDocumento == 2 || $model->tipoDocumento == 3;
             }],
             ['fecha', 'compare', 'compareAttribute' => 'fecha_factura','operator' => '>='],
