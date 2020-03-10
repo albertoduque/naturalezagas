@@ -1046,7 +1046,7 @@ class FacturaWsdl
 		$listaAdquirentes = array(
 			"tipoPersona"=> $model->id_empresa ? 1 : 2
 			//, "nombrecompleto"=> $model->id_empresa ? $infoFactura->idPersona->nombre.' '.$infoFactura->idPersona->apellido : $model->clientes
-			, "nombreCompleto"=> $model->id_empresa ? $model->clientes : ""
+			, "nombreCompleto"=> $model->clientes ? $model->clientes : ""
 			, "tipoIdentificacion"=> $model->tipoidentificacion
 			, "numeroIdentificacion"=> $model->identificacion
 			, "digitoverificacion"=> $model->tipoidentificacion==31 ?  $model->verificacion : ""

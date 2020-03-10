@@ -696,7 +696,7 @@ class FacturaController extends Controller
                     $transaction = Yii::$app->db->beginTransaction();
                     try{
                         $model->fecha = $this->FormatoFechas($model->fecha);
-                    
+                        $model->clientes=$model->id_empresa ? $model->idEmpresa->nombre : $model->idPersona->nombre.' '.$model->idPersona->apellido;
                         $model->fecha_vencimiento = $this->FormatoFechas($model->fecha_vencimiento);
                         $model->fechaemisionordencompra = $model->fechaemisionordencompra;
                         $session = Yii::$app->session;
@@ -1265,6 +1265,7 @@ class FacturaController extends Controller
                         $model->fecha = $this->FormatoFechas($model->fecha);
 						            $model->fecha_vencimiento = $this->FormatoFechas($model->fecha_vencimiento);
                         $model->fechaemisionordencompra = $this->FormatoFechas($model->fechaemisionordencompra);
+                        $model->clientes=$model->id_empresa ? $model->idEmpresa->nombre : $model->idPersona->nombre.' '.$model->idPersona->apellido;
                         $session = Yii::$app->session;
                         $event_id = $session->get('event_id');
                         $model->id_evento = $event_id;
